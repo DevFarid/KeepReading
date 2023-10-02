@@ -53,31 +53,39 @@ pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesse
 d_queue = Queue()
 r_queue = Queue()
 dataArr = []
+ser_model_dict = {}
+
 num_threads = args['threads']
 
 table_data = []
 
-with open(args['csv']) as csvfile:
-    tablereader = csv.reader(csvfile)
-    for row in tablereader:
-        table_data.append(row.copy())
-
-table_data = table_data[1:]
 
 #this goes through every image provided in the args['images'] folder
 if args['file'] is None:
+    with open(args['csv']) as csvfile:
+        tablereader = csv.reader(csvfile)
+        for row in tablereader:
+            table_data.append(row.copy())
+
+    table_data = table_data[1:]
     for row in table_data:
         print("Loading image" + row[1])
         dataArr.append([row[1], cv2.cvtColor(cv2.imread(args['images'] + "\\" + row[1] + ".jpg"), cv2.COLOR_BGR2RGB)])
+        ser_model_dict[row[1]] = {'SerialNumber': row[4], 'Model':row[3]}
         d_queue.put([row[1], cv2.cvtColor(cv2.imread(args['images'] + "\\" + row[1] + ".jpg"), cv2.COLOR_BGR2RGB)])
 
 #this goes through images only provided in the yaml file
 else:
+    with open(args['csv']) as csvfile:
+        tablereader = csv.DictReader(csvfile)
+        for row in tablereader:
+            ser_model_dict[row['PID']] = {'SerialNumber': row['SerialNumber'], 'Model':row['Model']}
+
     with open(args["file"]) as ymlfile:
         yml_reader = yaml.safe_load(ymlfile)
 
     for name in yml_reader:
-        print("Loading image" + row[1])
+        print("Loading image" + name)
         dataArr.append([name, cv2.cvtColor(cv2.imread(args['images'] + "\\" + name + ".jpg"), cv2.COLOR_BGR2RGB)])
         d_queue.put([name, cv2.cvtColor(cv2.imread(args['images'] + "\\" + name + ".jpg"), cv2.COLOR_BGR2RGB)])
 
@@ -88,13 +96,43 @@ def process_image(image):
     results = pytesseract.image_to_string(image, output_type=Output.DICT)
     return results.copy()
 
+def process_image_barcode_removal(image):
+    results = zxingcpp.read_barcodes(image)
+    for result in results:
+        t = str(result.position)[:-1]
+        t = [list(map(int, x.split("x"))) for x in t.split(" ")]
+
+        coords = {
+            "top_right": {
+                "x": t[0][0],
+                "y": t[0][1],
+            },
+            "bottom_right": {
+                "x": t[1][0],
+                "y": t[1][1],
+            },
+            "bottom_left": {
+                "x": t[2][0],
+                "y": t[2][1],
+            },
+            "top_left": {
+                "x": t[3][0],
+                "y": t[3][1],
+            },
+	    }
+        image = cv2.rectangle(image, (coords["top_left"]["x"],coords["top_left"]["y"]),(coords["bottom_right"]["x"],coords["bottom_right"]["y"]), (0, 0, 255), -1)
+    return pytesseract.image_to_string(image, output_type=Output.DICT)
+
 def image_processing_worker():
     while True:
         thing = d_queue.get()
         if thing is None:
             break
         image = thing[1]
-        results = [thing[0], process_image(image), image]
+        if args["barcode_removal"]:
+            results = [thing[0], process_image_barcode_removal(image), image]
+        else:
+            results = [thing[0], process_image(image), image]
         r_queue.put(results)
         d_queue.task_done()
         print("PID: ", thing[0])
@@ -115,17 +153,35 @@ while not r_queue.empty():
 
 successes = []
 failures = []
+ser = [[],[]]
+models = [[],[]]
 for entry in processed_results:
     if entry[0] in entry[1]["text"]:
         successes.append(entry)
     else:
         failures.append(entry)
+
+    if ser_model_dict[entry[0]]['SerialNumber'].upper() in entry[1]["text"]:
+        ser[0].append(entry)
+    else:
+        ser[1].append(entry)
+    
+    if ser_model_dict[entry[0]]['Model'].upper() in entry[1]["text"]:
+        models[0].append(entry)
+    else:
+        models[1].append(entry)
+
 print("Failures:")
 for failure in failures:
     print("PID: ", failure[0])
     print("Text: ", failure[1])
 
-print("Accuracy: ", (len(successes) / (len(successes) + len(failures))))
+print("PID Accuracy: ", (len(successes) / (len(successes) + len(failures))))
+print("SER Accuracy: ", (len(ser[0]) / (len(ser[0]) + len(ser[1]))))
+print("MOD Accuracy: ", (len(models[0]) / (len(models[0]) + len(models[1]))))
 
-with open(args['file'], 'w') as resultfile:
-    yaml.dump(failures, resultfile)
+print("PID Success Length: ", len(successes))
+print("PID Failure Length: ", len(failures))
+
+with open(args['results'], 'w') as resultfile:
+    yaml.dump([failure[0] for failure in failures], resultfile)
