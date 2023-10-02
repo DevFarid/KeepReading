@@ -2,20 +2,38 @@ import argparse
 import cv2
 from pytesseract import *
 import pytesseract
+import zxingcpp
 import csv
 
 from queue import *
-from threading import Thread, Lock
+from threading import Thread
+
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
+ap = argparse.ArgumentParser()
+
+ap.add_argument("-i", "--images",
+				required=True,
+				help="path to folder with input images")
+ap.add_argument("-c", "--csv",
+                required=True,
+				help="path to csv file ")
+ap.add_argument("-t", "--threads",
+                required=False,
+                type=int,
+                default=10,
+                help="number of threads to use")
+args = vars(ap.parse_args())
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 d_queue = Queue()
 r_queue = Queue()
 dataArr = []
-num_threads = 10
+num_threads = args['threads']
 
 table_data = []
 
-with open('Training Data\\15021026 1.csv') as csvfile:
+with open(args['csv']) as csvfile:
     tablereader = csv.reader(csvfile)
     for row in tablereader:
         table_data.append(row.copy())
@@ -23,8 +41,8 @@ with open('Training Data\\15021026 1.csv') as csvfile:
 table_data = table_data[1:]
 for row in table_data:
     print("Loading image" + row[1])
-    dataArr.append([row[1], cv2.cvtColor(cv2.imread("Training Data\\images\\" + row[1] + ".jpg"), cv2.COLOR_BGR2RGB)])
-    d_queue.put([row[1], cv2.cvtColor(cv2.imread("Training Data\\images\\" + row[1] + ".jpg"), cv2.COLOR_BGR2RGB)])
+    dataArr.append([row[1], cv2.cvtColor(cv2.imread(args['images'] + "\\" + row[1] + ".jpg"), cv2.COLOR_BGR2RGB)])
+    d_queue.put([row[1], cv2.cvtColor(cv2.imread(args['images'] + "\\" + row[1] + ".jpg"), cv2.COLOR_BGR2RGB)])
 for _ in range(num_threads):
     d_queue.put(None)
 
@@ -38,7 +56,7 @@ def image_processing_worker():
         if thing is None:
             break
         image = thing[1]
-        results = [thing[0], process_image(image)]
+        results = [thing[0], process_image(image), image]
         r_queue.put(results)
         d_queue.task_done()
         print("PID: ", thing[0])
@@ -64,6 +82,9 @@ for entry in processed_results:
         successes.append(entry)
     else:
         failures.append(entry)
-print(processed_results)
+print("Failures:")
+for failure in failures:
+    print("PID: ", failure[0])
+    print("Text: ", failure[1])
 
 print("Accuracy: ", (len(successes) / (len(successes) + len(failures))))
