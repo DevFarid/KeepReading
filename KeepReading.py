@@ -2,17 +2,23 @@ import tkinter as tk
 import cv2
 from PIL import Image, ImageTk
 import threading  # Import the threading module
+import pytesseract
 from CameraCV import CameraCV
 
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
 class KeepReading:
+
+    def __init__(self) -> None:
+        self.cv = CameraCV()
+        self.run()
 
     """
     Runs the GUI application.
     Created by Farid on 09/13/2023.
     """
     
-    @staticmethod
-    def run():
+    def run(self):
         """
         Start the application.
         """        
@@ -49,17 +55,17 @@ class KeepReading:
 
         # Event loop for camera preview
         def run_preview():
-            img_update = CameraCV.captureCameraPreview()
+            img_update = self.cv.captureCameraPreview()
             label_widget.configure(image=img_update)
             label_widget.image=img_update
             label_widget.update()
             label_widget.after(10, run_preview)
             
-        button1 = tk.Button(root, text="Snap Picture", command=CameraCV.captureCameraPicture)
+        button1 = tk.Button(root, text="Snap Picture", command=self.cv.analyze)
         button1.pack()
 
         run_preview()
         # Run the Tkinter event loop
         root.mainloop()
 
-KeepReading.run()
+KeepReading()
