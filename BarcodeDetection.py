@@ -37,6 +37,4 @@ class BarcodeDetection:
 			# Use coordinates of barcodes to cover them up with rectangles, improving OCR results
 			image = cv2.rectangle(
 				image, (coords["top_left"]["x"],coords["top_left"]["y"]),(coords["bottom_right"]["x"],coords["bottom_right"]["y"]), (0, 0, 255), -1)
-			cv2.imshow("rectangle", cv2.resize(image, (500,500), interpolation=cv2.INTER_AREA))
-			cv2.waitKey(0)
-		print(pytesseract.image_to_string(image))
+		return image

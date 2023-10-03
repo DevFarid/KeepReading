@@ -1,6 +1,7 @@
 import cv2
 from PIL import Image, ImageTk
 from OCR import OCR
+from BarcodeDetection import BarcodeDetection
 
 class CameraCV:
     """
@@ -13,7 +14,7 @@ class CameraCV:
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     def analyze(self):
-        img = self.captureCameraPicture()
+        img = BarcodeDetection.detect(self.captureCameraPicture())
         OCR.read(img)
 
     def captureCameraPicture(self):
