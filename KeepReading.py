@@ -55,7 +55,7 @@ class KeepReading:
 
         # Event loop for camera preview
         def run_preview():
-            img_update = self.cv.captureCameraPreview()
+            img_update = self.cv.captureCameraPreview(400, 300)
             label_widget.configure(image=img_update)
             label_widget.image=img_update
             label_widget.update()
