@@ -14,7 +14,7 @@ class CameraCV:
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
     def analyze(self):
-        img = BarcodeDetection.detect(self.captureCameraPicture())
+        img = self.captureCameraPicture()
         OCR.read(img)
 
     def captureCameraPicture(self):
