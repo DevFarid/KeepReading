@@ -18,7 +18,7 @@ class CameraCV:
 
     def captureCameraPicture(self):
         _, frame = self.video.read()
-        frame=cv2.cvtColor(frame,cv2.COLOR_BGR2RGBA)
+        frame=cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)
         cv2.imwrite("snapshot.jpg", frame)
         return cv2.imread("snapshot.jpg")
         
