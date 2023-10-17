@@ -1,3 +1,6 @@
 __pycache__/
 snapshot.jpg
 data/*
+
+env/*
+node_modules/*

@@ -67,8 +67,8 @@ class OCR:
 							(x, y - 10),
 							cv2.FONT_HERSHEY_SIMPLEX,
 							1.2, (0, 255, 255), 3)
-				
+		return image
 		# After all, we will show the output image
-		cv2.imshow("Image", image)
-		cv2.waitKey(0)
+		# cv2.imshow("Image", image)
+		# cv2.waitKey(0)
     
