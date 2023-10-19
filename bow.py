@@ -3,7 +3,7 @@ class BOW:
     """
         Bag of Words
         Created by Farid Kamizi on 10/19/2023.
-        This class represents a machine learning algorithm called `Bag of Words`.
+        This class represents an algorithm called `Bag of Words`.
         Given a "document", our goal is to search for interested words in that document.
     """     
     def __init__(self) -> None:

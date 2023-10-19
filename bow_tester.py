@@ -71,4 +71,4 @@ if __name__ == "__main__":
             correctClassification += sum(results)
             total_tests += len(value)
 
-    print(f"Correctly Labeled: {correctClassification}\nTotal Images: {total_tests}\nAccuracy: {correctClassification/total_tests*100}%")
+    print(f"Correctly Labeled: {correctClassification}\nTotal Images: {total_tests}\nAccuracy: {correctClassification/total_tests * 100}%")
