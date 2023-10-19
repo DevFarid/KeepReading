@@ -2,6 +2,7 @@ import pytesseract
 from pytesseract import Output
 import cv2
 
+# Line below required for Window users, (PATH variable issues for Windows specifically.)
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class OCR:
@@ -21,6 +22,12 @@ class OCR:
 			image[:,:,0] = g
 			image[:,:,1] = b
 		return image
+
+	@staticmethod
+	def getResults(image):
+		rgb = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+		results = pytesseract.image_to_data(rgb, output_type=Output.DICT)
+		return results["text"]
 
 	@staticmethod
 	def read(image, min_conf=0):
