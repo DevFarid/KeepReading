@@ -27,7 +27,7 @@ class OCR:
 	def getResults(image):
 		rgb = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
 		results = pytesseract.image_to_data(rgb, output_type=Output.DICT)
-		return results["text"]
+		return results
 
 	@staticmethod
 	def read(image, min_conf=0):

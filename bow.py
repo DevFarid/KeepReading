@@ -1,5 +1,4 @@
-import numpy as np
-
+import cv2
 class BOW:
     """
         Bag of Words
@@ -24,19 +23,28 @@ class BOW:
         return self.dictionary.remove(word) if self.dictionary.__contains__(word) else None
     
     # runs bag of words on OCR results.
-    def search(self, results, min_conf=0):
+    def search(self, results, min_conf=0) -> dict:
         bow_representation = dict()
-        for i in range(0, len(results["text"])):
-            text = results["text"][i]
-            conf = int(results["conf"][i])
-            
-            if conf >= min_conf:
-                if self.dictionary.__contains__(text):
-                    bow_representation[text] = bow_representation[text] + 1 if bow_representation.__contains__(text) else 1
+        if "text" in results:
+            for word in self.dictionary:
+                bow_representation[word] = 0
+            for i in range(0, len(results["text"])):
+                text = results["text"][i]
+                conf = int(results["conf"][i])
+                
+                if conf >= min_conf:
+                    if self.dictionary.__contains__(text):
+                        bow_representation[text] = bow_representation[text] + 1
+        return bow_representation
+    
+    def test(self, label, results, min_conf=0) -> dict:
+        bow_representation = self.search(results, min_conf)
+        print("Label: " + str(label))
+        print(bow_representation)
+        print("")
         return bow_representation
           
     def getDictionary(self) -> dict:
         return self.dictionary
     
-bow = BOW()
-bow.setDictionary(["DELL", "HP ", "LENOVO", "IBM", "HGST", "SAMSUNG", "INTEL", "SEAGATE"])
+
