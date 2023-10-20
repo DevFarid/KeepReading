@@ -1,7 +1,7 @@
 import cv2
 from PIL import Image, ImageTk
 from OCR import OCR
-from BarcodeDetection import BarcodeDetection
+# from BarcodeDetection import BarcodeDetection
 
 class CameraCV:
     """
@@ -15,7 +15,7 @@ class CameraCV:
 
     def analyze(self):
         img = self.captureCameraPicture()
-        OCR.read(img)
+        img = OCR.read(img)
 
     def captureCameraPicture(self):
         _, frame = self.video.read()
