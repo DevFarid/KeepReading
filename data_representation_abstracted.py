@@ -35,6 +35,8 @@ def represent_data(image, parameters: dict = {}):
     feature_vector = []
     # 1) preprocess
     processed_image = Preprocess.to_binary(Preprocess.gaussian_blur(Preprocess.to_bw(Preprocess.remove_bg(image)), 1), 180)
+    plt.imshow(processed_image)
+    plt.show()
     # 2) convert to histogram array
     sums = np.sum(processed_image, axis=0)
     reg_sum = sums / max(sums)
@@ -43,6 +45,8 @@ def represent_data(image, parameters: dict = {}):
     # 3) smooth?    
     return feature_vector
 
+plt.imshow(DELL_type1_images[2])
+plt.show()
 represent_data(DELL_type1_images[2])
 
 """
