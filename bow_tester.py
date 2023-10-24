@@ -46,10 +46,17 @@ if __name__ == "__main__":
     # BOW_TESTER.multiThreadedTest(LENOVO, LENOVO_CV2)
 
     
-    SEAGATE = [
-        "4421637", "4421648", "4421649", "4421650", "4421651", "4421652",
-        "4421653", "4421654", "4421655", "4421656", "4421657", "4421658", "4421659", 
-        "4421660", "4421661", "4421662", "4421663", "4421664"
+    # SEAGATE = [
+    #     "4421637", "4421648", "4421649", "4421650", "4421651", "4421652",
+    #     "4421653", "4421654", "4421655", "4421656", "4421657", "4421658", "4421659", 
+    #     "4421660", "4421661", "4421662", "4421663", "4421664"
+    # ]
+    # SEAGATE_CV2 = BOW_TESTER.createCVImageArray(SEAGATE)
+    # BOW_TESTER.multiThreadedTest(SEAGATE, SEAGATE_CV2)
+
+    INTEL = [
+        "4421604", "4421605", "4421605", "4421606", 
+        "4421607", "4421608", "4421610", "4421611"
     ]
-    SEAGATE_CV2 = BOW_TESTER.createCVImageArray(SEAGATE)
-    BOW_TESTER.multiThreadedTest(SEAGATE, SEAGATE_CV2)
+    INTEL_CV2 = BOW_TESTER.createCVImageArray(INTEL)
+    BOW_TESTER.multiThreadedTest(INTEL, INTEL_CV2)
