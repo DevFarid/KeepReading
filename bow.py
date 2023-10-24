@@ -6,34 +6,37 @@ class BOW:
         This class represents an algorithm called `Bag of Words`.
         Given a "document", our goal is to search for interested words in that document.
     """     
-    def __init__(self) -> None:
-        self.dictionary = list()
+    def __init__(self, file) -> None:
+        self.words = list()
+        self.loadWordsFromFile(file)
 
     # TODO: load words from file.
-    def loadWordsFromFile(self):
-        pass 
+    def loadWordsFromFile(self, file) -> None:
+        with open(file, "r") as f:
+            for line in f:
+                self.words.append(line)
 
     def setDictionary(self, newDict) -> None:
-        self.dictionary = newDict
+        self.words = newDict
 
     def addWord(self, word) -> None:
-        self.dictionary.append(word)
+        self.words.append(word)
 
     def removeWord(self, word) -> None:
-        return self.dictionary.remove(word) if self.dictionary.__contains__(word) else None
+        return self.words.remove(word) if self.words.__contains__(word) else None
     
     # runs bag of words on OCR results.
     def search(self, results, min_conf=0) -> dict:
         bow_representation = dict()
         if "text" in results:
-            for word in self.dictionary:
+            for word in self.words:
                 bow_representation[word] = 0
             for i in range(0, len(results["text"])):
                 text = results["text"][i]
                 conf = int(results["conf"][i])
                 
                 if conf >= min_conf:
-                    if self.dictionary.__contains__(text):
+                    if self.words.__contains__(text):
                         bow_representation[text] = bow_representation[text] + 1
         return bow_representation
     
@@ -45,6 +48,6 @@ class BOW:
         return bow_representation
           
     def getDictionary(self) -> dict:
-        return self.dictionary
+        return self.words
     
 

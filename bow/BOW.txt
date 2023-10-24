@@ -1,0 +1,116 @@
+// DELL
+DELL
+D@LL
+
+AL1
+All
+5SE
+SSE
+S5E
+
+B06
+BO6
+0NY
+ONY
+
+HDE
+BL8
+4DA
+B51
+
+4SX
+B60
+B6O
+ENY
+
+AH8
+1DA
+B51
+
+
+// HP
+CT:2
+HP Model
+HP Part
+HP P/N
+
+hewlett
+packard
+invent
+
+MK1
+401
+4O1
+GRRB
+
+HDE
+AA0
+AAO
+1CB
+A51
+
+MBE
+214
+7RC
+
+CA0
+CAO
+706
+7O6
+9-B
+201
+2O1
+00CP
+O0CP
+0OCP
+OOCP
+
+EH0
+EHO
+072
+O72
+FARWC
+
+518
+216-
+001
+OO1
+
+HPD5
+
+EH0
+EHO
+300
+3OO
+FBQ
+DD
+
+627
+114
+-002
+OO2
+
+// LENOVO
+Lenovo
+Lenova
+SMD7A
+7XB7A000
+Units.Refer
+ThinkSystem
+SN:SMD7A
+
+// IBM
+
+// HGST
+
+// SAMSUNG
+SAMSUNG
+
+// INTEL
+TEL
+INTEL
+
+// SEAGATE
+Seagate
+Barracuda
+ST14

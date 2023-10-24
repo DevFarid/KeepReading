@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from bow import *
 from OCR import *
+from preprocessing import *
 
 class BOW_TESTER():
     """
@@ -22,53 +24,39 @@ class BOW_TESTER():
         return data
     
     @staticmethod
-    def getTrainingDataDict() -> list:
-        return ["DELL", "HP ", "LENOVO", "IBM", "HGST", "SAMSUNG", "INTEL", "SEAGATE"]
-    
+    def process_image(filenames, cv2_images, index):
+        print(f"Testing Image: {filenames[index]}.jpg\n", OCR.getResults(cv2_images[index])["text"], "\n")
+
     @staticmethod
-    def test_images(key, image):
-        ocrResults = OCR.getResults(image)
-        evalDict = bow.test(key, ocrResults)
-        
-        if key not in evalDict or evalDict[key] <= 0:
-            return 0
-        else:
-            for k, value in evalDict.items():
-                if k != key and value > 0:
-                    return 0
-            return 1
+    def multiThreadedTest(imgNameArr, cv2ImgObjArr):
+        x = partial(BOW_TESTER.process_image, imgNameArr, cv2ImgObjArr)
+
+        with ThreadPoolExecutor() as executor:
+            executor.map(x, range(len(imgNameArr)))
 
 if __name__ == "__main__":
-    DELL = BOW_TESTER.createCVImageArray(["4421633", "4421582", "4421488", "4421442"])
-    HP = BOW_TESTER.createCVImageArray(["4421207", "4421202", "4421185", "4421642"])
-    LENOVO = BOW_TESTER.createCVImageArray(["4421226", "4421278", "4421322", "4421297"])
-    IBM = BOW_TESTER.createCVImageArray(["4421430", "4421634", "4421314", "4421315"])
-    HGST = BOW_TESTER.createCVImageArray(["4421460", "4421461", "4421462", "4421463"])
-    SAMSUNG = BOW_TESTER.createCVImageArray(["4421603"])
-    INTEL = BOW_TESTER.createCVImageArray(["4421604", "4421605", "4421606", "4421611"])
-    SEAGATE = BOW_TESTER.createCVImageArray(["4421664", "4421647", "4421646", "4421637"])
-    # EDGE_CASES = BOW_TESTER.createCVImageArray(["4421201", "4421449", "4421311"])
+    # LENOVO = [
+    #     "4421225", "4421226", "4421227", "4421228",
+    #     "4421320", "4421321", "4421322", "4421323", "4421324",
+    #     "4421425", "4421426", "4421427", "4421428", "4421429",
+    #     "4421430", "4421431", "4421432", "4421433", "4421434",
+    #     "4421635", "4421636"
+    # ]
+    # LENOVO_CV2 = BOW_TESTER.createCVImageArray(LENOVO)
+    # BOW_TESTER.multiThreadedTest(LENOVO, LENOVO_CV2)
 
-    concat = dict()
-    concat["DELL"] = DELL
-    concat["HP"] = HP
-    concat["LENOVO"] = LENOVO
-    concat["IBM"] = IBM
-    concat["HGST"] = HGST
-    concat["SAMSUNG"] = SAMSUNG
-    concat["INTEL"] = INTEL
-    concat["SEAGATE"] = SEAGATE
+    
+    # SEAGATE = [
+    #     "4421637", "4421648", "4421649", "4421650", "4421651", "4421652",
+    #     "4421653", "4421654", "4421655", "4421656", "4421657", "4421658", "4421659", 
+    #     "4421660", "4421661", "4421662", "4421663", "4421664"
+    # ]
+    # SEAGATE_CV2 = BOW_TESTER.createCVImageArray(SEAGATE)
+    # BOW_TESTER.multiThreadedTest(SEAGATE, SEAGATE_CV2)
 
-    bow = BOW()
-    bow.setDictionary(BOW_TESTER.getTrainingDataDict())
-
-    correctClassification = 0
-    total_tests = 0
-
-    with ThreadPoolExecutor() as executor:
-        for key, value in concat.items():
-            results = list(executor.map(BOW_TESTER.test_images, [key] * len(value), value))
-            correctClassification += sum(results)
-            total_tests += len(value)
-
-    print(f"Correctly Labeled: {correctClassification}\nTotal Images: {total_tests}\nAccuracy: {correctClassification/total_tests * 100}%")
+    INTEL = [
+        "4421604", "4421605", "4421605", "4421606", 
+        "4421607", "4421608", "4421610", "4421611"
+    ]
+    INTEL_CV2 = BOW_TESTER.createCVImageArray(INTEL)
+    BOW_TESTER.multiThreadedTest(INTEL, INTEL_CV2)
