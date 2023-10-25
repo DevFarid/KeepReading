@@ -54,9 +54,16 @@ if __name__ == "__main__":
     # SEAGATE_CV2 = BOW_TESTER.createCVImageArray(SEAGATE)
     # BOW_TESTER.multiThreadedTest(SEAGATE, SEAGATE_CV2)
 
-    INTEL = [
-        "4421604", "4421605", "4421605", "4421606", 
-        "4421607", "4421608", "4421610", "4421611"
+    # INTEL = [
+    #     "4421604", "4421605", "4421605", "4421606", 
+    #     "4421607", "4421608", "4421610", "4421611"
+    # ]
+    # INTEL_CV2 = BOW_TESTER.createCVImageArray(INTEL)
+    # BOW_TESTER.multiThreadedTest(INTEL, INTEL_CV2)
+
+    HGST = [
+        "4421460", "4421461", "4421462", 
+        "4421463", "4421464", "4421465"
     ]
-    INTEL_CV2 = BOW_TESTER.createCVImageArray(INTEL)
-    BOW_TESTER.multiThreadedTest(INTEL, INTEL_CV2)
+    HGST_CV2 = BOW_TESTER.createCVImageArray(HGST)
+    BOW_TESTER.multiThreadedTest(HGST, HGST_CV2)
