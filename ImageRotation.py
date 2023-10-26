@@ -12,7 +12,6 @@ class ImageRotation:
         rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         results = pytesseract.image_to_osd(rgb, output_type=Output.DICT)
         # display the orientation information
-        print("[INFO] ".format(results.keys()))
         print("[INFO] detected orientation: {}".format(results["orientation"]))
         print("[INFO] rotate by {} degrees to correct".format(results["rotate"]))
 
