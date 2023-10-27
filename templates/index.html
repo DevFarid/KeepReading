@@ -9,6 +9,8 @@
         <h2>KeepReading</h2>
     </div>
     <div class="wrapper">
+
+        <!-- camera container and captrue button-->
         <div class="camera-container">
             <div class="placeholder">
                 <img src="/video_feed" class="viewfinder" id="frame">
@@ -19,16 +21,38 @@
                 </form>
             </div>
         </div>
+
+        <!-- model version container -->
+        <div class="model-container">
+            <div>Current Version</div>
+            <div><button id="button-history">Version History</button></div>
+        </div>
+
+        <!-- label information container -->
         <div class="label-container">
-            <div class="label">Label info</div>
+            <div class="label">Label Info</div>
             <ul>
                 <li>PID#: <span id="pid"></span></li>
                 <li>S/N: <span id="serial"></span></li>
                 <li>P/N: <span id="part"></span></li>
             </ul>
+        
+            <!-- button container, edit approve -->
+            <div class="button-label-container">
+
+                <div class="button-left"><button id="button-edit" type="submit">EDIT</button></div>
+                <div class="button-right"><button id="button-approve" type="submit">APPROVE</button></div>
+
+            </div>
         </div>
-        <div class="sample-container">
-            <div class="label">Other stuff</div>
+
+
+        <!-- text read container -->
+        <div class="text-container">
+            <div class="label">All Text Read</div>
+            <div id="read-text">TEXT</div>
+            <div id="confidence-lv">Confidence LV.</div>
+            
         </div>
     </div>
 </body>
