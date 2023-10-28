@@ -1,6 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from bow import *
 from OCR import *
+from preprocessing import *
 
 class BOW_TESTER():
     """
@@ -22,53 +24,96 @@ class BOW_TESTER():
         return data
     
     @staticmethod
-    def getTrainingDataDict() -> list:
-        return ["DELL", "HP ", "LENOVO", "IBM", "HGST", "SAMSUNG", "INTEL", "SEAGATE"]
-    
+    def process_image(filenames, cv2_images, index):
+        print(f"Testing Image: {filenames[index]}.jpg\n", OCR.getResults(cv2_images[index])["text"], "\n")
+
     @staticmethod
-    def test_images(key, image):
-        ocrResults = OCR.getResults(image)
-        evalDict = bow.test(key, ocrResults)
-        
-        if key not in evalDict or evalDict[key] <= 0:
-            return 0
-        else:
-            for k, value in evalDict.items():
-                if k != key and value > 0:
-                    return 0
-            return 1
+    def multiThreadedTest(imgNameArr, cv2ImgObjArr):
+        x = partial(BOW_TESTER.process_image, imgNameArr, cv2ImgObjArr)
+
+        with ThreadPoolExecutor() as executor:
+            executor.map(x, range(len(imgNameArr)))
+
+    @staticmethod
+    def lenovo_test():
+        LENOVO = [
+            "4421225", "4421226", "4421227", "4421228",
+            "4421320", "4421321", "4421322", "4421323", "4421324",
+            "4421425", "4421426", "4421427", "4421428", "4421429",
+            "4421430", "4421431", "4421432", "4421433", "4421434",
+            "4421635", "4421636"
+        ]
+        LENOVO_CV2 = BOW_TESTER.createCVImageArray(LENOVO)
+        BOW_TESTER.multiThreadedTest(LENOVO, LENOVO_CV2)
+
+    @staticmethod
+    def seagate_test():
+        SEAGATE = [
+            "4421637", "4421648", "4421649", "4421650", "4421651", "4421652",
+            "4421653", "4421654", "4421655", "4421656", "4421657", "4421658", "4421659", 
+            "4421660", "4421661", "4421662", "4421663", "4421664"
+        ]
+        SEAGATE_CV2 = BOW_TESTER.createCVImageArray(SEAGATE)
+        BOW_TESTER.multiThreadedTest(SEAGATE, SEAGATE_CV2)
+
+    @staticmethod
+    def intel_test():
+        INTEL = [
+            "4421604", "4421605", "4421605", "4421606", 
+            "4421607", "4421608", "4421610", "4421611"
+        ]
+        INTEL_CV2 = BOW_TESTER.createCVImageArray(INTEL)
+        BOW_TESTER.multiThreadedTest(INTEL, INTEL_CV2)
+
+    @staticmethod
+    def hgst_test():
+        HGST = [
+            "4421460", "4421461", "4421462", 
+            "4421463", "4421464", "4421465"
+        ]
+        HGST_CV2 = BOW_TESTER.createCVImageArray(HGST)
+        BOW_TESTER.multiThreadedTest(HGST, HGST_CV2)
+
+    @staticmethod
+    def ibm_test():
+        IBM = [
+            "4421634", "4421643", "4421644", "4421645"
+        ]
+        IBM_CV2 = BOW_TESTER.createCVImageArray(IBM)
+        BOW_TESTER.multiThreadedTest(IBM, IBM_CV2)
+
+    @staticmethod
+    def hp_test():
+        HP = [
+            "4421196", "4421197", "4421198", "4421199", "4421200", "4421202",
+            "4421203", "4421204", "4421205", "4421206", "4421207", "4421208",
+            "4421453", "4421454", "4421455", "4421456", "4421457", "4421458",
+            "4421459", "4421503", "4421504", "4421505", "4421506", "4421507",
+            "4421508", "4421509", "4421510", "4421512", "4421638", "4421639",
+            "4421640", "4421641", "4421642"
+        ]
+        HP_CV2 = BOW_TESTER.createCVImageArray(HP)
+        BOW_TESTER.multiThreadedTest(HP, HP_CV2)
+
+    @staticmethod
+    def dell_test():
+        DELL = [
+            "4421184", "4421187", "4421201", "4421214", "4421221", "4421237",
+            "4421494", "4421308", "4421502", "4421528", "4421614"
+        ]
+        DELL_CV2 = BOW_TESTER.createCVImageArray(DELL)
+        BOW_TESTER.multiThreadedTest(DELL, DELL_CV2)
 
 if __name__ == "__main__":
-    DELL = BOW_TESTER.createCVImageArray(["4421633", "4421582", "4421488", "4421442"])
-    HP = BOW_TESTER.createCVImageArray(["4421207", "4421202", "4421185", "4421642"])
-    LENOVO = BOW_TESTER.createCVImageArray(["4421226", "4421278", "4421322", "4421297"])
-    IBM = BOW_TESTER.createCVImageArray(["4421430", "4421634", "4421314", "4421315"])
-    HGST = BOW_TESTER.createCVImageArray(["4421460", "4421461", "4421462", "4421463"])
-    SAMSUNG = BOW_TESTER.createCVImageArray(["4421603"])
-    INTEL = BOW_TESTER.createCVImageArray(["4421604", "4421605", "4421606", "4421611"])
-    SEAGATE = BOW_TESTER.createCVImageArray(["4421664", "4421647", "4421646", "4421637"])
-    # EDGE_CASES = BOW_TESTER.createCVImageArray(["4421201", "4421449", "4421311"])
-
-    concat = dict()
-    concat["DELL"] = DELL
-    concat["HP"] = HP
-    concat["LENOVO"] = LENOVO
-    concat["IBM"] = IBM
-    concat["HGST"] = HGST
-    concat["SAMSUNG"] = SAMSUNG
-    concat["INTEL"] = INTEL
-    concat["SEAGATE"] = SEAGATE
-
-    bow = BOW()
-    bow.setDictionary(BOW_TESTER.getTrainingDataDict())
-
-    correctClassification = 0
-    total_tests = 0
-
-    with ThreadPoolExecutor() as executor:
-        for key, value in concat.items():
-            results = list(executor.map(BOW_TESTER.test_images, [key] * len(value), value))
-            correctClassification += sum(results)
-            total_tests += len(value)
-
-    print(f"Correctly Labeled: {correctClassification}\nTotal Images: {total_tests}\nAccuracy: {correctClassification/total_tests * 100}%")
+    pass
+    # 
+    # The code below is used to run the images on OCR and get an output to then find the popular strings to identify drives via BOWs.
+    # Feel free to enable each section to run different categories of drives.
+    # 
+    # BOW_TESTER.lenovo_test()
+    # BOW_TESTER.seagate_test()
+    # BOW_TESTER.intel_test()
+    # BOW_TESTER.hgst_test()
+    # BOW_TESTER.ibm_test()
+    # BOW_TESTER.hp_test()
+    # BOW_TESTER.dell_test()
