@@ -53,6 +53,42 @@ class KNearest(CModel):
         with open(file_loc, "r") as file:
             self.__training = yaml.safe_load(file)
 
+
+img_labels = []
+with open("data\\15021026 1 fixed.csv") as csv_file:
+    table_reader = csv.DictReader(csv_file)
+    for row in table_reader:
+        img_labels.append([row['PID'], row['Model'] + row['Manufacturer']])
+
+PIDS = [label[0] for label in img_labels]
+labels = [label[1] for label in img_labels]
+
+images = ["data\\" + str(PID) + ".jpg" for PID in PIDS] 
+kmodel = KNearest()
+kmodel.train("trained_means.yaml")
+
+num_correct = 0
+total_num = 0
+
+dict_accuracy = {}
+
+with open("trained_means_results_f.txt", "w") as res_file:
+    for i, image in enumerate(images):
+        result = kmodel.predict(cv2.imread(image), BWHistogram(), {"optimal_size": 3024, 'K': 1})
+        if labels[i] == result:
+            num_correct += 1
+            if labels[i] in list(dict_accuracy.keys()):
+                dict_accuracy[labels[i]][0] += 1
+        total_num += 1
+        if labels[i] not in list(dict_accuracy.keys()):
+            dict_accuracy[labels[i]] = [0, 1]
+        else:
+            dict_accuracy[labels[i]][1] += 1
+        print(res_file, "Prediction Accuracy: {0} at label {1}".format(num_correct/total_num, labels[i]))
+    for key in list(dict_accuracy.keys()):
+        print(res_file, "Accuracy for {0} Label: {1} | Number Considered: {2}".format(key, dict_accuracy[key][0], dict_accuracy[key][1]))
+
+
 """
 img_labels = []
 with open("data\\15021026 1.csv") as csv_file:

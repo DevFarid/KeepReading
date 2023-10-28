@@ -5,6 +5,7 @@ import cv2
 from skimage.filters import threshold_otsu
 import csv
 import yaml
+import h5py
 
 from queue import *
 from threading import Thread
@@ -43,7 +44,7 @@ def represent_training(training_labels: dict, parameters: dict):
             if thing is None:
                 break
             data = thing[1]
-            results = represent_data(data['image'], parameters)
+            results = BWHistogram().represent_data(data['image'], parameters)
             r_queue.put([data['label'], results])
             d_queue.task_done()
 
@@ -70,7 +71,7 @@ def represent_training(training_labels: dict, parameters: dict):
     return represented_training
 
 class BWHistogram(TrainingRepresentation):
-    def represent_data(image, parameters: dict = {}):
+    def represent_data(self, image, parameters: dict = {}):
         def remove_white(arr):
             removed_whitespace = []
             for val in arr:
@@ -94,6 +95,9 @@ class BWHistogram(TrainingRepresentation):
                 index += 2
                 i += 1
 
+            if len(completed) < parameters['optimal_size']:
+                completed = regularize(completed)
+
             while len(completed) > parameters['optimal_size']:
                 completed.pop()
 
@@ -113,10 +117,47 @@ class BWHistogram(TrainingRepresentation):
             feature_vector.append(float(num))
         return feature_vector
 
+def compute_averages(img_data: list):
+    avg_dict = {}
+    count_dict = {}
+    result = []
+    for entry in img_data:
+        if entry[0] not in list(avg_dict.keys()):
+            avg_dict[entry[0]] = np.array(entry[1])
+            count_dict[entry[0]] = 1
+        else:
+            avg_dict[entry[0]] += np.array(entry[1])
+            count_dict[entry[0]] += 1
+    temp_result = []
+    for key in list(avg_dict.keys()):
+        temp_result.append([key, avg_dict[key] / count_dict[key]])
+    for entry in temp_result:
+        fixed_list = []
+        for num in entry[1]:
+            fixed_list.append(float(num))
+        result.append([entry[0], fixed_list])
+    return result
 
-training_data = process_training(load_training("data", "data\\15021026 1.csv"))
-represented_training = represent_training(training_data, parameters={'optimal_size': training_data[list(training_data.keys())[0]]['image'].shape[1]})
-with open("trained_reps.yaml", "w") as file:
-    yaml_file = yaml.safe_dump(represented_training, file)
 
-print("SUCCESS!")
+def convert_one_hot(label: str, label_dict: dict):
+    if label in list(label_dict.keys()):
+        return label_dict[label], label_dict
+    elif len(list(label_dict.keys())) == 0:
+        label_dict[label] = [1]
+        return [1], label_dict
+    else:
+        fixed_dict = {}
+        opt_length = 0
+        for key in list(label_dict.keys()):
+            fixed_dict[key] = np.append(label_dict[key], [0])
+            opt_length = len(fixed_dict[key])
+        fixed_dict[label] = np.append(np.zeros((opt_length - 1,)), [1])
+        return fixed_dict[label], fixed_dict
+    
+def convert_all_to_one_hots(labels):
+    one_hot_dict = {}
+
+    for label in labels:
+        _, one_hot_dict = convert_one_hot(label, one_hot_dict)
+
+    return one_hot_dict, np.array([one_hot_dict[l] for l in labels])
