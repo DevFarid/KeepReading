@@ -1,8 +1,15 @@
 // DELL
 DELL
 D@LL
+Config
+Exos
+Constellation
 
 // HP
+Hewlett
+Packard
+HP
+HPE
 
 // LENOVO
 Lenovo
@@ -14,6 +21,7 @@ ThinkSystem
 SN:SMD7A
 
 // IBM
+IBM
 
 // HGST
 HGST
@@ -30,7 +38,6 @@ Inte!
 INTEL®
 SSDSC2KG
 $4600
-ICES-3(B)/NMB-3(B)
 
 // SEAGATE
 Seagate

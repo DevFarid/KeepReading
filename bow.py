@@ -1,4 +1,6 @@
 import cv2
+from bow_tester import *
+
 class BOW:
     """
         Bag of Words
@@ -9,12 +11,15 @@ class BOW:
     def __init__(self, file) -> None:
         self.words = list()
         self.loadWordsFromFile(file)
+        print("BOW Vector = ", self.words)
 
     # TODO: load words from file.
     def loadWordsFromFile(self, file) -> None:
         with open(file, "r") as f:
             for line in f:
-                self.words.append(line)
+                line = line.replace("\n", "")
+                if line.find("\n") == 0 or line.find("//") == -1:
+                    self.words.append(line)
 
     def setDictionary(self, newDict) -> None:
         self.words = newDict
@@ -26,19 +31,12 @@ class BOW:
         return self.words.remove(word) if self.words.__contains__(word) else None
     
     # runs bag of words on OCR results.
-    def search(self, results, min_conf=0) -> dict:
-        bow_representation = dict()
-        if "text" in results:
-            for word in self.words:
-                bow_representation[word] = 0
-            for i in range(0, len(results["text"])):
-                text = results["text"][i]
-                conf = int(results["conf"][i])
-                
-                if conf >= min_conf:
-                    if self.words.__contains__(text):
-                        bow_representation[text] = bow_representation[text] + 1
-        return bow_representation
+    def search(self, img, min_conf=50) -> dict:
+        result = [0] * len(self.words)
+        for words in self.words {
+            
+        }
+
     
     def test(self, label, results, min_conf=0) -> dict:
         bow_representation = self.search(results, min_conf)
@@ -51,3 +49,7 @@ class BOW:
         return self.words
     
 
+
+if __name__ == "__main__":
+    bow = BOW('bow/BOW.txt')
+    
