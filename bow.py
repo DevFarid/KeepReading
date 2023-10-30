@@ -41,8 +41,20 @@ class BOW:
             for result in ocrResults["text"]:
                 if result.find(word) != -1:
                     bow_vector[self.bag_of_words.index(word)] = 1
-        return {k: v for k, v in zip(self.bag_of_words, bow_vector)}
+        # return {k: v for k, v in zip(self.bag_of_words, bow_vector)}
+        return bow_vector
 
+
+    def reduce(self, R: list, N: int) -> list:
+        result = []
+        i = 0
+        while i < len(R):
+            sum = 0
+            for j in range(N):
+                sum += R[i+j]
+            result.append(sum)
+            i += N
+        return result
 
     def test(self, label, results, min_conf=0) -> dict:
         bow_representation = self.search(results, min_conf)
@@ -56,6 +68,6 @@ class BOW:
     
 if __name__ == "__main__":
     bow = BOW('bow/BOW.txt')
-    x = bow.search(cv2.imread("data/4421225.jpg"))
-    print(x)
+    x = bow.search(cv2.imread("data/4421310.jpg"))
+    print(f"Resulting vector: {x}\nDimensionality Reduced: {bow.reduce(x, 2)}")
     
