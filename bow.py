@@ -113,7 +113,7 @@ class BOW:
         plt.ylim(0, 1)
         plt.tight_layout()
 
-    def plot_all(self, data, results):
+    def plot_all(self, data, results, images):
         # Create a figure with subplots using gridspec
         plt.figure(figsize=(15, 10))
         gs = GridSpec(len(data), 2, width_ratios=[1, 3])  # adjust width_ratios as needed
@@ -121,7 +121,7 @@ class BOW:
         for i in range(len(data)):
             # Plot images
             ax1 = plt.subplot(gs[i, 0])
-            ax1.imshow(cv2.cvtColor(dell_cv2[i], cv2.COLOR_BGR2RGB))  # Convert image from BGR to RGB
+            ax1.imshow(cv2.cvtColor(images[i], cv2.COLOR_BGR2RGB))  # Convert image from BGR to RGB
             ax1.axis('off')  # Turn off axis
             
             # Plot results
@@ -150,5 +150,5 @@ if __name__ == "__main__":
         dell_results = list(executor.map(bow.search, dell_cv2))
         lenovo_results = list(executor.map(bow.search, lenovo_cv2))
 
-    bow.plot_all(dell_data, dell_results)
-    bow.plot_all(lenovo_data, lenovo_results)
+    bow.plot_all(dell_data, dell_results, dell_cv2)
+    bow.plot_all(lenovo_data, lenovo_results, lenovo_cv2)
