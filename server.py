@@ -20,8 +20,10 @@ def gen_frames():
             
 def gen_frame():
      _, frame = camera.read()
-     img = OCR.read(frame)
-     cv2.imwrite('static/assets/capture.jpg', img)
+     #get data that contain image, text, confidence
+     data = OCR.read(frame)
+     cv2.imwrite('static/assets/capture.jpg', data[0])
+     return data
             
 @app.route('/')
 def index():
@@ -33,7 +35,7 @@ def video_feed():
 
 @app.route('/capture/', methods=['GET'])
 def capture_image():
-    gen_frame()
+    data = gen_frame()
     return render_template('ocr.html')
 
 if __name__ == "__main__":

@@ -1,6 +1,9 @@
 <head>
     <title>TechR2 Hard Drive Reader</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <style>
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+    </style>
 </head>
 
 <body>
@@ -16,6 +19,7 @@
                 <img src="../static/assets/capture.jpg" class="viewfinder" id="frame">
             </div>
             <div class="button-container">
+                <button style="font-size:24px">Audio Control<i class="fa fa-microphone"></i></button>
                 <form action="/">
                     <button class="button" type="submit">Reset</button>
                 </form>

@@ -70,7 +70,9 @@ class OCR:
 							(x, y - 10),
 							cv2.FONT_HERSHEY_SIMPLEX,
 							1.2, (0, 255, 255), 3)
-		return image
+		# return a tuple that contained image, text and confidence
+		data = tuple((image,text,conf))
+		return data
 		# After all, we will show the output image
 		# cv2.imshow("Image", image)
 		# cv2.waitKey(0)
