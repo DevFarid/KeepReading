@@ -1,4 +1,4 @@
-from data_representation_abstracted_copy1 import *
+from data_representation_abstracted_updated import *
 import numpy as np
 import yaml
 import cv2
@@ -53,7 +53,7 @@ class KNearest(CModel):
         with open(file_loc, "r") as file:
             self.__training = yaml.safe_load(file)
 
-
+"""
 img_labels = []
 with open("data\\15021026 1 fixed.csv") as csv_file:
     table_reader = csv.DictReader(csv_file)
@@ -65,7 +65,7 @@ labels = [label[1] for label in img_labels]
 
 images = ["data\\" + str(PID) + ".jpg" for PID in PIDS] 
 kmodel = KNearest()
-kmodel.train("trained_means.yaml")
+kmodel.train("Model\\trained_means.yaml")
 
 num_correct = 0
 total_num = 0
@@ -87,7 +87,7 @@ with open("trained_means_results_f.txt", "w") as res_file:
         print(res_file, "Prediction Accuracy: {0} at label {1}".format(num_correct/total_num, labels[i]))
     for key in list(dict_accuracy.keys()):
         print(res_file, "Accuracy for {0} Label: {1} | Number Considered: {2}".format(key, dict_accuracy[key][0], dict_accuracy[key][1]))
-
+"""
 
 """
 img_labels = []

@@ -3,7 +3,9 @@ from bow_tester import *
 from OCR import *
 from concurrent.futures import ThreadPoolExecutor
 
-class BOW:
+from Model.data_representation_abstracted_updated import *
+
+class BOW(TrainingRepresentation):
     """
         Bag of Words
         Created by Farid Kamizi on 10/19/2023.
@@ -34,7 +36,7 @@ class BOW:
         return self.bag_of_words.remove(word) if self.bag_of_words.__contains__(word) else None
     
     # runs bag of words on OCR results.
-    def search(self, img, min_conf=0) -> dict:
+    def search(self, img) -> dict:
         bow_vector = [0] * len(self.bag_of_words)
         ocrResults = OCR.getResults(img)
         for word in self.bag_of_words:
@@ -50,12 +52,15 @@ class BOW:
         print(bow_representation)
         print("")
         return bow_representation
+    
+    def represent_data(im, param: dict):
+        return list(BOW().search(im).values())
           
     def getDictionary(self) -> dict:
         return self.bag_of_words
     
 if __name__ == "__main__":
     bow = BOW('bow/BOW.txt')
-    x = bow.search(cv2.imread("data/4421225.jpg"))
+    x = list(bow.search(cv2.imread("4421225.jpg")).values())
     print(x)
     

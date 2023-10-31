@@ -1,0 +1,1 @@
+DRIVE NUM: 0	PID: (True, '4421205')	Serial Number: (False, '')	Model Number: ('EH0146FARWD', -1, '')

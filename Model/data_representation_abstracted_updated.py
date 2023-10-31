@@ -31,7 +31,7 @@ class TrainingRepresentation():
         pass
 
 num_threads = 10
-def represent_training(training_labels: dict, parameters: dict):
+def represent_training(training_labels: dict, parameters={}):
     represented_training = []
     PIDs = list(training_labels.keys())
 
@@ -44,7 +44,7 @@ def represent_training(training_labels: dict, parameters: dict):
             if thing is None:
                 break
             data = thing[1]
-            results = BWHistogram().represent_data(data['image'], parameters)
+            results = BOW().represent_data(data['image'], parameters)
             r_queue.put([data['label'], results])
             d_queue.task_done()
 
@@ -161,3 +161,4 @@ def convert_all_to_one_hots(labels):
         _, one_hot_dict = convert_one_hot(label, one_hot_dict)
 
     return one_hot_dict, np.array([one_hot_dict[l] for l in labels])
+
