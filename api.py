@@ -37,9 +37,12 @@ class OcrResult:
 # client = OcrDatabase()
 # ocr = OcrResult(1234567, 12345678, "MANUFACTURER", "MODEL", "SN", "100%", True, datetime.now()).__dict__
 # testPost = Api.insert(ocr, client.col)
+# print(testPost)
 
-# filter = {'pid':1234567}
+# filter = {}
 # testGetList = Api.find(filter, client.col)
+# results = list(testGetList)
+# print(len(results)) 
 # testGetOne = Api.find_one(filter, client.col)
 
 # print(testPost.inserted_id)
