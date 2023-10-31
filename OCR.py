@@ -14,12 +14,12 @@ class OCR:
 	def green_blue_swap(image):
 		# 3-channel image (no transparency)
 		if image.shape[2] == 3:
-			b,g,r = cv2.split(image)
+			b, g, _ = cv2.split(image)
 			image[:,:,0] = g
 			image[:,:,1] = b
 		# 4-channel image (with transparency)
 		elif image.shape[2] == 4:
-			b,g,r,a = cv2.split(image)
+			b, g, _, _ = cv2.split(image)
 			image[:,:,0] = g
 			image[:,:,1] = b
 		return image

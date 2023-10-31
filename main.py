@@ -1,10 +1,4 @@
-import tkinter as tk
-import cv2
-from PIL import Image, ImageTk
-import threading  # Import the threading module
-import pytesseract
-from CameraCV import CameraCV
-
+from common_imports import *
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class KeepReading:
