@@ -6,7 +6,7 @@ import time
 class KeepTalking():
     def __init__(self, lang='en', slowTalk=False) -> None:
         """Constructs a KeepTalking object that can talk.
-        This class is wrapped around the gTTS library.
+        This class is wrapped around the gTTS & pygame library.
         With few additions, such as saving continous audio files for various processes.
         It also is a player library that allows one to play pre-record mp3 files.
         Create by Farid Kamizi on 10/30/2023.
