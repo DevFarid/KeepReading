@@ -23,7 +23,8 @@ ap.add_argument("-e", "--extension",
                 default=".jpg")
 ap.add_argument("-t", "--trained_data",
                 help="location where saved model is kept",
-                default="Model\\trained_means.yaml")
+                default=["Model\\trained_means.yaml"],
+                nargs='+')
 ap.add_argument("-r", "--results",
                 help="file to record scanned PIDs, Serial Nums, and Model Nums",
                 default="Model\\scan_results.txt")

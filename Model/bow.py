@@ -53,7 +53,7 @@ class BOW(TrainingRepresentation):
         print("")
         return bow_representation
     
-    def represent_data(im, param: dict):
+    def represent_data(self, im, param: dict):
         return list(BOW("Model\\BOW.txt").search(im).values())
           
     def getDictionary(self) -> dict:

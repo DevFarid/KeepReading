@@ -14,6 +14,7 @@ import matplotlib.pyplot as plt
 from models_updated import CModel, KNearest
 from preprocessing import *
 from data_representation_abstracted_updated import TrainingRepresentation, BWHistogram
+from bow import BOW
 
 # Threading
 from queue import *
@@ -37,13 +38,19 @@ scanned_text = pytesseract.image_to_data(image, output_type=Output.DICT)
 print(scanned_text['text'])
 """
 # load models
-def load_models(trained_data: str):
+def load_models(trained_data: list):
     model_params = []
 
     k_model = KNearest()
-    k_model.train(trained_data)
+    k_model.train(trained_data[0])
     parameters = {'K': 1, 'optimal_size': len(k_model._KNearest__training[0][1])}
     model_params.append([k_model, parameters.copy()])
+
+    b_model = KNearest()
+    b_model.train(trained_data[1])
+    parameters = {'K':1}
+
+    model_params.append([b_model, parameters.copy()])
 
     return model_params
 
@@ -85,7 +92,7 @@ def getSER(text: list, im, rotation=0):
         return False, ""
 
 # getMOD
-def getMOD(image, drive_types: list, text: list, training_data_loc: str):
+def getMOD(image, drive_types: list, text: list, training_data_locs: list):
     def containsMODVar(text:list):
         for entry in text:
             if "MODEL" in entry.upper():
@@ -103,12 +110,22 @@ def getMOD(image, drive_types: list, text: list, training_data_loc: str):
                 else:
                     mod_num = mod_num[0:mod_num.index(special_char)] + mod_num[mod_num.index(special_char) + 1:]
         return mod_num
-    
-    model_params = load_models(training_data_loc)[0]
-    model_drive = predict(image, model_params[0], BWHistogram(), model_params[1])
+
+    trained_models = load_models(training_data_locs)
+    BW_model = trained_models[0]
+    BOW_model = trained_models[1]
+
+    model_drive = predict(image, BW_model[0], BWHistogram(), BW_model[1])
+    model_drive_2 = predict(image, BOW_model[0], BOW("Model\\BOW.txt"), BOW_model[1])
     for drive_type in drive_types:
-        if drive_type in model_drive:
+        found1, found2 = False, False
+        if drive_type in model_drive and not found1:
             model_drive = model_drive[0:model_drive.index(drive_type)]
+            found1 = True
+        if drive_type in model_drive_2 and not found2:
+            model_drive_2 = model_drive_2[0:model_drive_2.index(drive_type)]
+            found2 = True
+        if found1 and found2:
             break
 
     truth, name = containsMODVar(text)
@@ -123,8 +140,8 @@ def getMOD(image, drive_types: list, text: list, training_data_loc: str):
             model_success = 1
         else:
             model_success = 0
-        return processMODEntry(text[text.index(name) + app_ind]), model_success, model_drive
-    return model_drive, -1, ""
+        return processMODEntry(text[text.index(name) + app_ind]), model_success, model_drive, model_drive_2
+    return model_drive, -1, "", model_drive_2
 
 """
 drives = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO"]
