@@ -1,5 +1,10 @@
-from pytesseract import*
+import pytesseract
+from pytesseract import Output
 import cv2
+import matplotlib.pyplot as plt
+
+# Line below required for Window users, (PATH variable issues for Windows specifically.)
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class OCR:
 	def __init__(self) -> None:
@@ -9,15 +14,23 @@ class OCR:
 	def green_blue_swap(image):
 		# 3-channel image (no transparency)
 		if image.shape[2] == 3:
-			b,g,r = cv2.split(image)
+			b, g, _ = cv2.split(image)
 			image[:,:,0] = g
 			image[:,:,1] = b
 		# 4-channel image (with transparency)
 		elif image.shape[2] == 4:
-			b,g,r,a = cv2.split(image)
+			b, g, _, _ = cv2.split(image)
 			image[:,:,0] = g
 			image[:,:,1] = b
 		return image
+
+	@staticmethod
+	def getResults(image):
+		# rgb = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
+		# plt.imshow(image)
+		# plt.show()
+		results = pytesseract.image_to_data(image, output_type=Output.DICT)
+		return results
 
 	@staticmethod
 	def read(image, min_conf=0):
@@ -67,8 +80,10 @@ class OCR:
 							(x, y - 10),
 							cv2.FONT_HERSHEY_SIMPLEX,
 							1.2, (0, 255, 255), 3)
-				
+		# return a tuple that contained image, text and confidence
+		data = tuple((image,text,conf))
+		return data
 		# After all, we will show the output image
-		cv2.imshow("Image", image)
-		cv2.waitKey(0)
+		# cv2.imshow("Image", image)
+		# cv2.waitKey(0)
     
