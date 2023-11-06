@@ -14,12 +14,12 @@ class OCR:
 	def green_blue_swap(image):
 		# 3-channel image (no transparency)
 		if image.shape[2] == 3:
-			b, g, _ = cv2.split(image)
+			b,g,r = cv2.split(image)
 			image[:,:,0] = g
 			image[:,:,1] = b
 		# 4-channel image (with transparency)
 		elif image.shape[2] == 4:
-			b, g, _, _ = cv2.split(image)
+			b,g,r,a = cv2.split(image)
 			image[:,:,0] = g
 			image[:,:,1] = b
 		return image
@@ -80,9 +80,7 @@ class OCR:
 							(x, y - 10),
 							cv2.FONT_HERSHEY_SIMPLEX,
 							1.2, (0, 255, 255), 3)
-		# return a tuple that contained image, text and confidence
-		data = tuple((image,text,conf))
-		return data
+		return image
 		# After all, we will show the output image
 		# cv2.imshow("Image", image)
 		# cv2.waitKey(0)
