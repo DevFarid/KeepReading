@@ -2,3 +2,6 @@ __pycache__/
 snapshot.jpg
 data/*
 tts/latest.mp3
+env/*
+node_modules/*
+static/assets/capture.jpg
