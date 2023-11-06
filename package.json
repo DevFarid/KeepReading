@@ -1,0 +1,14 @@
+{
+  "name": "keepreadingui",
+  "version": "1.0.0",
+  "description": "GUI for KeepReading OCR",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^27.0.0"
+  }
+}

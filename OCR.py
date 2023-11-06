@@ -1,5 +1,8 @@
-from pytesseract import*
+import pytesseract
+from pytesseract import Output
 import cv2
+
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 class OCR:
 	def __init__(self) -> None:
@@ -67,8 +70,10 @@ class OCR:
 							(x, y - 10),
 							cv2.FONT_HERSHEY_SIMPLEX,
 							1.2, (0, 255, 255), 3)
-				
+		# return a tuple that contained image, text and confidence
+		data = tuple((image,text,conf))
+		return data
 		# After all, we will show the output image
-		cv2.imshow("Image", image)
-		cv2.waitKey(0)
+		# cv2.imshow("Image", image)
+		# cv2.waitKey(0)
     
