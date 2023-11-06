@@ -1,8 +1,9 @@
 __pycache__/
 snapshot.jpg
 data/*
-tts/latest.mp3
+kr_model/data/*
+kr_tts/latest.mp3
 env/*
-node_modules/*
-static/assets/capture.jpg
+kr_web/node_modules/*
+kr_web/static/assets/capture.jpg
 .DS_STORE
