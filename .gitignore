@@ -5,3 +5,4 @@ tts/latest.mp3
 env/*
 node_modules/*
 static/assets/capture.jpg
+.DS_STORE
