@@ -1,6 +1,28 @@
+# Accessing other files in different folders.
+import os
+import sys
+folder_names = [
+    'kr_accuracy_tests',
+    'kr_barcode_utils',
+    'kr_code_coverage',
+    'kr_model',
+    'kr_tts',
+    'kr_utils',
+    'kr_web'
+]
+
+parent_directory = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+for folder_name in folder_names:
+    folder_path = parent_directory + '\\' + folder_name
+    sys.path.insert(1, str(folder_path))
+
+
+import OCR
 from flask import Flask, render_template, Response
 import cv2
 import threading
+
 
 app = Flask(__name__)
 camera = cv2.VideoCapture(0)
