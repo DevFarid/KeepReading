@@ -1,7 +1,7 @@
-from lib import OCR
+from lib.OCR import ObjectCharacterRecognition
 from flask import Flask, render_template, Response
 import cv2
-import threading
+import subprocess
 
 
 app = Flask(__name__)
@@ -21,7 +21,7 @@ def gen_frames():
 def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
-    data = OCR.read(frame)
+    data = ObjectCharacterRecognition.read(frame)
     cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
             
@@ -36,7 +36,9 @@ def video_feed():
 @app.route('/capture/')
 def capture_image():
     data = gen_frame()
-    return render_template('ocr.html')
+    return render_template('ocr.html', data = data)
 
 if __name__ == "__main__":
+    # proc = subprocess.Popen(['npm','start'])
     app.run(debug=True)
+    

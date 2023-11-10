@@ -6,3 +6,4 @@ env/*
 node_modules/*
 static/assets/capture.jpg
 .DS_STORE
+kr_web/node_modules
