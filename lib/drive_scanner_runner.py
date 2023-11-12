@@ -6,8 +6,10 @@ from pytesseract import Output
 import argparse
 import cv2
 import os
+import platform
 
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+if platform.system() == 'Windows':
+    pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 # arguments
 ap = argparse.ArgumentParser()
