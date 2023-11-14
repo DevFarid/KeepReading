@@ -1,0 +1,1 @@
+DRIVE NUM: 0	PID: (True, '4421654')	Serial Number: (False, '')	Model Number: ST14000NM0048SEAGATE

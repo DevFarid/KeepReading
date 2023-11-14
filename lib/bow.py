@@ -1,6 +1,6 @@
 import cv2
 from bow_tester import *
-from OCR import *
+from OCR import ObjectCharacterRecognition
 from concurrent.futures import ThreadPoolExecutor
 
 from data_representation_abstracted_updated import *
@@ -38,7 +38,7 @@ class BOW(TrainingRepresentation):
     # runs bag of words on OCR results.
     def search(self, img) -> dict:
         bow_vector = [0] * len(self.bag_of_words)
-        ocrResults = OCR.getResults(img)
+        ocrResults = ObjectCharacterRecognition.getResults(img)
         for word in self.bag_of_words:
             for result in ocrResults["text"]:
                 if result.find(word) != -1:
@@ -54,7 +54,7 @@ class BOW(TrainingRepresentation):
         return bow_representation
     
     def represent_data(self, im, param: dict):
-        return list(BOW("Model\\BOW.txt").search(im).values())
+        return list(BOW("BOW.txt").search(im).values())
           
     def getDictionary(self) -> dict:
         return self.bag_of_words
