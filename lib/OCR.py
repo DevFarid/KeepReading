@@ -40,6 +40,9 @@ class ObjectCharacterRecognition:
 		rgb = cv2.cvtColor(image, cv2.COLOR_BGRA2RGB)
 		results = pytesseract.image_to_data(rgb, output_type=Output.DICT)
 
+		#store list of text read and their confidence level
+		list_text = []
+		list_lv = []
 		# Then loop over each of the individual text
 		# localizations
 		for i in range(0, len(results["text"])):
@@ -55,7 +58,7 @@ class ObjectCharacterRecognition:
 			# with the confidence of the text localization
 			text = results["text"][i]
 			conf = int(results["conf"][i])
-			
+
 			# filter out weak confidence text localizations
 			if conf > min_conf:
 				
@@ -65,6 +68,8 @@ class ObjectCharacterRecognition:
 				print("Text: {}".format(text))
 				print("")
 				
+				list_text = list_text.append(text)
+				list_lv = list_lv.append(conf)
 				# We then strip out non-ASCII text so we can
 				# draw the text on the image We will be using
 				# OpenCV, then draw a bounding box around the
@@ -79,8 +84,8 @@ class ObjectCharacterRecognition:
 							(x, y - 10),
 							cv2.FONT_HERSHEY_SIMPLEX,
 							1.2, (0, 255, 255), 3)
-		# return a tuple that contained image, text and confidence
-		data = tuple((image,text,conf))
+		# return a tuple that contained image, text list and confidence list
+		data = tuple((image,list_text,list_lv))
 		return data
 		# After all, we will show the output image
 		# cv2.imshow("Image", image)

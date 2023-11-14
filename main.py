@@ -1,6 +1,9 @@
 from lib.OCR import ObjectCharacterRecognition
 from flask import Flask, render_template, Response
 import cv2
+import threading
+import json
+from lib.OCR import OCR
 
 app = Flask(__name__)
 camera = cv2.VideoCapture(0)
@@ -34,7 +37,9 @@ def video_feed():
 @app.route('/capture/')
 def capture_image():
     data = gen_frame()
-    return render_template('ocr.html')
+    confi_lv = data[2]
+    text_read = data[1]
+    return render_template('ocr.html',confi_lv=confi_lv,text_read=text_read)
 
 if __name__ == "__main__":
     app.run(debug=True)
