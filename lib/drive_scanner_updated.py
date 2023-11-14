@@ -11,7 +11,7 @@ import yaml
 import matplotlib.pyplot as plt
 
 # Import models + preprocessors
-from models_updated import CModel, KNearest
+from models_updated import CModel, KNearest, ModelUtils
 from preprocessing import *
 from data_representation_abstracted_updated import TrainingRepresentation, BWHistogram
 from bow import BOW
@@ -38,17 +38,25 @@ scanned_text = pytesseract.image_to_data(image, output_type=Output.DICT)
 print(scanned_text['text'])
 """
 # load models
-def load_models(trained_data: list):
+def load_models(trained_data_loc, K=1, accuracy_mode=False):
     model_params = []
 
+    KN_BW_X_loc = trained_data_loc + "\\KNearest_BWHist_X.hdf5"
+    KN_BW_Y_loc = trained_data_loc + "\\KNearest_BWHist_Y.hdf5"
+    KN_BW_Dict_loc = trained_data_loc + "\\KNearest_BWHist_Dict.yaml"
+
     k_model = KNearest()
-    k_model.train(trained_data[0])
-    parameters = {'K': 1, 'optimal_size': len(k_model._KNearest__training[0][1])}
+    k_model.load(KN_BW_X_loc, KN_BW_Y_loc, KN_BW_Dict_loc)
+    parameters = {'K': K, 'optimal_size': len(k_model._KNearest__training[0][1]), 'accuracy_mode': accuracy_mode}
     model_params.append([k_model, parameters.copy()])
 
+
+    KN_BOW_X_loc = trained_data_loc + "\\KNearest_BOW_X.hdf5"
+    KN_BOW_Y_loc = trained_data_loc + "\\KNearest_BOW_Y.hdf5"
+    KN_BOW_Dict_loc = trained_data_loc + "\\KNearest_BOW_Dict.yaml"
     b_model = KNearest()
-    b_model.train(trained_data[1])
-    parameters = {'K':1}
+    b_model.load(KN_BOW_X_loc, KN_BOW_Y_loc, KN_BOW_Dict_loc)
+    parameters = {'K': K, 'accuracy_mode': accuracy_mode}
 
     model_params.append([b_model, parameters.copy()])
 
@@ -92,73 +100,37 @@ def getSER(text: list, im, rotation=0):
         return False, ""
 
 # getMOD
-def getMOD(image, drive_types: list, text: list, training_data_locs: list):
+def getMOD(image, drive_types: list, text: list, training_data_locs: list, accuracy_mode=False):
     def containsMODVar(text:list):
         for entry in text:
             if "MODEL" in entry.upper():
                 return True, entry
         return False, ""
-    
-    def processMODEntry(mod_num: str):
-        special_chars = {"*", "\"", " ", "+", ":", "\n"}
-        for special_char in special_chars:
-            while special_char in mod_num:
-                if mod_num.index(special_char) == 0:
-                    mod_num = mod_num[1:]
-                elif mod_num.index(special_char) == len(mod_num) - 1:
-                    mod_num = mod_num[:-1]
-                else:
-                    mod_num = mod_num[0:mod_num.index(special_char)] + mod_num[mod_num.index(special_char) + 1:]
-        return mod_num
 
-    trained_models = load_models(training_data_locs)
+    trained_models = load_models(training_data_locs, 3, accuracy_mode)
     BW_model = trained_models[0]
     BOW_model = trained_models[1]
 
+    model_predictions = {}
+
     model_drive = predict(image, BW_model[0], BWHistogram(), BW_model[1])
-    model_drive_2 = predict(image, BOW_model[0], BOW("Model\\BOW.txt"), BOW_model[1])
-    for drive_type in drive_types:
-        found1, found2 = False, False
-        if drive_type in model_drive and not found1:
-            model_drive = model_drive[0:model_drive.index(drive_type)]
-            found1 = True
-        if drive_type in model_drive_2 and not found2:
-            model_drive_2 = model_drive_2[0:model_drive_2.index(drive_type)]
-            found2 = True
-        if found1 and found2:
-            break
+    model_drive_2 = predict(image, BOW_model[0], BOW("BOW.txt"), BOW_model[1])
+    #These are returning lists of potential matches
+
+    model_predictions["BWHist"] = model_drive
+    model_predictions["BOW"] = model_drive_2
+
+    Y_dict = {}
+    with open(training_data_locs + "\\" + "KNearest_BWHist_Dict.yaml") as yamlfile:
+        Y_dict = yaml.safe_load(yamlfile)
 
     truth, name = containsMODVar(text)
+
     if truth:
         app_ind = 1
-        while len(text[text.index(name) + app_ind]) < 10 and text[text.index(name) + app_ind] not in model_drive:
+        while len(text[text.index(name) + app_ind]) < 10 and text.index(name) + app_ind < len(text):
             app_ind += 1
-        if text[text.index(name) + app_ind] in model_drive:
-            model_success = 1
-            return model_drive, model_success, model_drive
-        elif processMODEntry(text[text.index(name) + app_ind]) == model_drive:
-            model_success = 1
-        else:
-            model_success = 0
-        return processMODEntry(text[text.index(name) + app_ind]), model_success, model_drive, model_drive_2
-    return model_drive, -1, "", model_drive_2
+        if text.index(name) + app_ind < len(text) - 1 and text[text.index(name) + app_ind]:
+            model_predictions["OCR"] = text[text.index(name) + app_ind]
 
-"""
-drives = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO"]
-print("RECEIVED PID: {0}".format(getPID(scanned_text['text'])[1]))
-
-model_no, model_success_int, model_prediction = getMOD(drives, scanned_text['text'])
-print("RECEIVED MODEL NUMBER: {0}".format(model_no))
-
-if model_success_int == 0:
-    model_success = "FAILED"
-elif model_success_int == 1:
-    model_success = "SUCCEEDED"
-else:
-    model_success = "UNKNOWN"
-
-if model_success_int == -1:
-    print("MODEL SUCCESS: {0}".format(model_success))
-else:
-    print("MODEL SUCCESS: {0}\nPREDICTED: {1}".format(model_success, model_prediction))
-"""
+    return ModelUtils.get_overall_prediction(model_predictions, drive_types, list(Y_dict.keys()))
