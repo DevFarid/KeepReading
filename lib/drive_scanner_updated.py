@@ -15,6 +15,7 @@ from models_updated import CModel, KNearest, ModelUtils
 from preprocessing import *
 from data_representation_abstracted_updated import TrainingRepresentation, BWHistogram
 from bow import BOW
+from utilities import ConstantNames
 
 # Threading
 from queue import *
@@ -22,40 +23,21 @@ from threading import Thread
 
 # Set pytesseract path
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
-"""
-# arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-i", "--image",
-                required=True,
-                help="path to folder with image to scan")
-args = vars(ap.parse_args())
 
-# load image
-image = cv2.imread(args['image'])
-
-# get text from image
-scanned_text = pytesseract.image_to_data(image, output_type=Output.DICT)
-print(scanned_text['text'])
-"""
 # load models
 def load_models(trained_data_loc, K=1, accuracy_mode=False):
     model_params = []
 
-    KN_BW_X_loc = trained_data_loc + "\\KNearest_BWHist_X.hdf5"
-    KN_BW_Y_loc = trained_data_loc + "\\KNearest_BWHist_Y.hdf5"
-    KN_BW_Dict_loc = trained_data_loc + "\\KNearest_BWHist_Dict.yaml"
+    KN_BW_Dict_loc = trained_data_loc + "\\" + ConstantNames.BWHIST + "_" + ConstantNames.KNEAREST + "_Dict.yaml"
 
     k_model = KNearest()
-    k_model.load(KN_BW_X_loc, KN_BW_Y_loc, KN_BW_Dict_loc)
+    k_model.load(trained_data_loc, KN_BW_Dict_loc, ConstantNames.BWHIST)
     parameters = {'K': K, 'optimal_size': len(k_model._KNearest__training[0][1]), 'accuracy_mode': accuracy_mode}
     model_params.append([k_model, parameters.copy()])
 
-
-    KN_BOW_X_loc = trained_data_loc + "\\KNearest_BOW_X.hdf5"
-    KN_BOW_Y_loc = trained_data_loc + "\\KNearest_BOW_Y.hdf5"
-    KN_BOW_Dict_loc = trained_data_loc + "\\KNearest_BOW_Dict.yaml"
+    KN_BOW_Dict_loc = trained_data_loc + "\\" + ConstantNames.BOW + "_" + ConstantNames.KNEAREST + "_Dict.yaml"
     b_model = KNearest()
-    b_model.load(KN_BOW_X_loc, KN_BOW_Y_loc, KN_BOW_Dict_loc)
+    b_model.load(trained_data_loc, KN_BOW_Dict_loc, ConstantNames.BOW)
     parameters = {'K': K, 'accuracy_mode': accuracy_mode}
 
     model_params.append([b_model, parameters.copy()])
@@ -121,7 +103,7 @@ def getMOD(image, drive_types: list, text: list, training_data_locs: list, accur
     model_predictions["BOW"] = model_drive_2
 
     Y_dict = {}
-    with open(training_data_locs + "\\" + "KNearest_BWHist_Dict.yaml") as yamlfile:
+    with open(training_data_locs + "\\" + ConstantNames.BWHIST + "_" + ConstantNames.KNEAREST + "_Dict.yaml") as yamlfile:
         Y_dict = yaml.safe_load(yamlfile)
 
     truth, name = containsMODVar(text)

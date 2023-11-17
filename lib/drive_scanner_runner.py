@@ -9,7 +9,7 @@ import os
 import platform
 
 from queue import Queue
-from threading import Thread
+from threading import Thread, Lock
 
 if platform.system() == 'Windows':
     pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -83,6 +83,7 @@ else:
         results = pytesseract.image_to_string(image, output_type=Output.DICT)
         return results.copy()
     
+    MUTEX = Lock()
     def image_processing_worker():
         while True:
             image_info = d_queue.get()
@@ -91,7 +92,11 @@ else:
             image = image_info[0]
             image_loc = image_info[1]
             ocr_text = process_image(image)
-            results = [image_loc, getPID(ocr_text, image), getSER(ocr_text, image), getMOD(image, DRIVES, ocr_text, args['trained_data'], args['accuracy'])]
+
+            with MUTEX:
+                modelNumber = getMOD(image, DRIVES, ocr_text, args['trained_data'], args['accuracy'])
+
+            results = [image_loc, getPID(ocr_text, image), getSER(ocr_text, image), modelNumber]
 
             r_queue.put(results.copy())
             d_queue.task_done()

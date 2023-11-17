@@ -1,37 +1,41 @@
 from models_updated import *
 from data_representation_abstracted_updated import *
 from bow import BOW
+from utilities import ConstantNames
 import h5py
 import yaml
 
 import argparse
 import os
 
-def load_to_file(file_name_X: str, file_name_Y: str, file_name_dict: str, X, Y, Y_dict):
-    fX = h5py.File(file_name_X + ".hdf5", "w")
-    fY = h5py.File(file_name_Y + ".hdf5", "w")
+def load_to_file(trained_model_parameters, trained_data_folder, data_rep_name, ml_alg_name):
+    saved_model = h5py.File(trained_data_folder + "\\" + "model" + ".hdf5", "a")
 
-    fX.create_dataset("data", data=X)
-    fY.create_dataset("labels", data=Y)
+    entries = list(trained_model_parameters.keys())
+    for entry in entries:
+        if entry != "Y_dict":
+            saved_model.create_dataset(entry + "_" + data_rep_name + "_" + ml_alg_name, data=trained_model_parameters[entry])
 
-    fX.close()
-    fY.close()
+    file_name_dict = trained_data_folder + "\\" + data_rep_name + "_" + ml_alg_name + "_Dict"
 
-    keys = list(Y_dict.keys())
+    keys = list(trained_model_parameters['Y_dict'].keys())
     conv_dict = {}
     for key in keys:
-        conv_dict[key] = [float(element) for element in list(Y_dict[key])]
+        conv_dict[key] = [float(element) for element in list(trained_model_parameters['Y_dict'][key])]
 
     with open(file_name_dict + ".yaml", "w") as ymlfile:
         yaml.safe_dump(conv_dict, ymlfile)
+    saved_model.close()
     pass
 
 def train_on(ml_alg: CModel, data_rep: TrainingRepresentation, ml_alg_name: str, data_rep_name: str):
-    X, Y_arr = ml_alg.train(data_rep, "..\\data", "..\\data\\15021026 1 fixed.csv")
+    X, Y_arr = CModel.represent_images_as_data(data_rep, "..\\data", "..\\data\\15021026 1 fixed.csv")
     Y_dict = Y_arr[0]
     Y = Y_arr[1]
 
-    load_to_file(args['trained_data'] + "\\" + ml_alg_name + "_" + data_rep_name + "_X", args['trained_data'] + "\\" + ml_alg_name + "_" + data_rep_name + "_Y", args['trained_data'] + "\\" + ml_alg_name + "_" + data_rep_name + "_Dict", X, Y, Y_dict)
+    trained_model_parameters = ml_alg.train(X, Y, Y_dict)
+
+    return load_to_file(trained_model_parameters, args['trained_data'], data_rep_name, ml_alg_name)
 
 # arguments
 ap = argparse.ArgumentParser()
@@ -49,22 +53,8 @@ args = vars(ap.parse_args())
 if not os.path.exists(args['trained_data']):
     os.mkdir(args['trained_data'])
 
-"""
-#Training BWHistogram Representation with KNearest
-X, Y_arr = KNearest().train(BWHistogram(), "..\\data", "..\\data\\15021026 1 fixed.csv")
-Y_dict = Y_arr[0]
-Y = Y_arr[1]
-
-load_to_file(args['trained_data'] + "\\KNearest_BWHist_X", args['trained_data'] + "\\KNearest_BWHist_Y", args['trained_data'] + "\\KNearest_BWHist_Dict", X, Y, Y_dict)
-
-#Training BOW Representation with KNearest
-X, Y_arr = KNearest().train(BOW("BOW.txt"), "..\\data", "..\\data\\15021026 1 fixed.csv")
-Y_dict = Y_arr[0]
-Y = Y_arr[1]
-
-load_to_file(args['trained_data'] + "")
-"""
-
-train_on(KNearest(), BWHistogram(), "KNearest", "BWHist")
-train_on(KNearest(), BOW("BOW.txt"), "KNearest", "BOW")
+#Setting up training
+train_on(KNearest(), BWHistogram(), ConstantNames.KNEAREST, ConstantNames.BWHIST)
+saved_model = train_on(KNearest(), BOW("BOW.txt"), ConstantNames.KNEAREST, ConstantNames.BOW)
+saved_model.close()
 
