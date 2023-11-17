@@ -34,25 +34,7 @@ class CModel():
         return {"X": X, "Y": Y, "Y_dict": Y_dict}
 
     @staticmethod
-    def represent_images_as_data(training_rep: TrainingRepresentation, image_folder: str, csv_path: str, num_threads=10):
-        ### LOADS EVERY IMAGE IN ###
-        def load_training(image_folder, csv_path) -> dict:
-            drive_dict = {}
-            with(open(csv_path)) as csv_file:
-                tablereader = csv.DictReader(csv_file)
-                for row in tablereader:
-                    row['Image'] = cv2.imread(image_folder + "\\" + row['PID'] + ".jpg")
-                    drive_dict[row['PID']] = row
-            return drive_dict
-
-        ### LABELS EACH IMAGE ###
-        def process_training(drive_dict: dict):
-            training_labels = {}
-            PIDs = list(drive_dict.keys())
-            for PID in PIDs:
-                training_labels[PID] = {'label': drive_dict[PID]['Model'] + drive_dict[PID]['Manufacturer'], 'image': drive_dict[PID]['Image']}
-            return training_labels
-
+    def represent_images_as_data(training_data: dict, training_rep: TrainingRepresentation, num_threads=10):
         ### REPRESENTS EACH IMAGE ACCORDING TO PASSED TRAINING-REPRESENTER ###
         def represent_training(training_labels: dict, training_rep: TrainingRepresentation, parameters={}):
             represented_training = []
@@ -92,9 +74,8 @@ class CModel():
                 represented_training.append(r_queue.get())
 
             return represented_training
-        ### END HELPER METHODS ###
+        ### END HELPER METHOD ###
 
-        training_data = process_training(load_training(image_folder, csv_path))
         represented_training = represent_training(training_data, training_rep, parameters={'optimal_size': training_data[list(training_data.keys())[0]]['image'].shape[1]})
         Y = [entry[0] for entry in represented_training]
         X = [entry[1] for entry in represented_training]

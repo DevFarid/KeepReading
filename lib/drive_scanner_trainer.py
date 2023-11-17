@@ -28,8 +28,8 @@ def load_to_file(trained_model_parameters, trained_data_folder, data_rep_name, m
     saved_model.close()
     pass
 
-def train_on(ml_alg: CModel, data_rep: TrainingRepresentation, ml_alg_name: str, data_rep_name: str):
-    X, Y_arr = CModel.represent_images_as_data(data_rep, "..\\data", "..\\data\\15021026 1 fixed.csv")
+def train_on(training_data: dict, ml_alg: CModel, data_rep: TrainingRepresentation, ml_alg_name: str, data_rep_name: str):
+    X, Y_arr = CModel.represent_images_as_data(training_data, data_rep)
     Y_dict = Y_arr[0]
     Y = Y_arr[1]
 
@@ -48,13 +48,39 @@ ap.add_argument("-e", "--extension",
 ap.add_argument("-t", "--trained_data",
                 help="folder name of location where trained data should be saved",
                 default="model")
+ap.add_argument("--exclusions",
+                help="images to exclude",
+                default="")
 args = vars(ap.parse_args())
 
 if not os.path.exists(args['trained_data']):
     os.mkdir(args['trained_data'])
 
+### LOADS EVERY IMAGE IN ###
+def load_training(image_folder, csv_path, exclusions: list) -> dict:
+    drive_dict = {}
+    with(open(csv_path)) as csv_file:
+        tablereader = csv.DictReader(csv_file)
+        for row in tablereader:
+            if row['PID'] not in exclusions:
+                row['Image'] = cv2.imread(image_folder + "\\" + row['PID'] + ".jpg")
+                drive_dict[row['PID']] = row
+    return drive_dict
+
+### LABELS EACH IMAGE ###
+def process_training(drive_dict: dict):
+    training_labels = {}
+    PIDs = list(drive_dict.keys())
+    for PID in PIDs:
+        training_labels[PID] = {'label': drive_dict[PID]['Model'] + drive_dict[PID]['Manufacturer'], 'image': drive_dict[PID]['Image']}
+    return training_labels
+
 #Setting up training
-train_on(KNearest(), BWHistogram(), ConstantNames.KNEAREST, ConstantNames.BWHIST)
-saved_model = train_on(KNearest(), BOW("BOW.txt"), ConstantNames.KNEAREST, ConstantNames.BOW)
-saved_model.close()
+image_loc = "..\\data"
+csv_loc = "..\\data\\15021026 1 fixed.csv"
+
+training_data = process_training(load_training(image_loc, csv_loc, args['exclusions'].split(",")[:-1]))
+
+train_on(training_data, KNearest(), BWHistogram(), ConstantNames.KNEAREST, ConstantNames.BWHIST)
+train_on(training_data, KNearest(), BOW("BOW.txt"), ConstantNames.KNEAREST, ConstantNames.BOW)
 

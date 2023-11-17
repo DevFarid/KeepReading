@@ -14,6 +14,8 @@ from threading import Thread, Lock
 if platform.system() == 'Windows':
     pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
+def get_PID_only(file_name):
+    return file_name[:file_name.find(".jpg")]
 # arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image",
@@ -38,6 +40,9 @@ ap.add_argument("--threads",
 ap.add_argument("--accuracy",
                 help="turns on \'accuracy\' mode to test accuracy of model",
                 default=False)
+ap.add_argument("--exclusions",
+                help="images to exclude",
+                default="")
 
 args = vars(ap.parse_args())
 
@@ -67,7 +72,8 @@ if not args['batch']:
 
 else:
     all_files = os.listdir(args['image'])
-    selected_files = [os.path.join(args['image'], file) for file in all_files if file.endswith(args['extension'])]
+    exclusions = args['exclusions'].split(',')[:-1]
+    selected_files = [os.path.join(args['image'], file) for file in all_files if (file.endswith(args['extension']) and get_PID_only(file) not in exclusions)]
 
     images = [(cv2.imread(image_loc), image_loc) for image_loc in selected_files]
     d_queue = Queue()
