@@ -1,12 +1,15 @@
+import sys
+sys.path.insert(1, 'lib')
+
 from lib.OCR import ObjectCharacterRecognition
+from lib.drive_scanner_runner import ModelRunner
 from flask import Flask, render_template, Response
 import cv2
 import threading
 import json
-from lib.OCR import OCR
 
 app = Flask(__name__)
-camera = cv2.VideoCapture(-0)
+camera = cv2.VideoCapture(0)
 
 def gen_frames():  
     while True:
@@ -22,8 +25,8 @@ def gen_frames():
 def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
-    data = ObjectCharacterRecognition.read(frame)
-    cv2.imwrite('static/assets/capture.jpg', data[0])
+    data = ModelRunner.run([cv2.imread("lib/data/4421199.jpg")], "lib/model_updated")
+    # cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
             
 @app.route('/')
@@ -37,9 +40,8 @@ def video_feed():
 @app.route('/capture/')
 def capture_image():
     data = gen_frame()
-    confi_lv = data[2]
-    text_read = data[1]
-    return render_template('ocr.html',confi_lv=confi_lv,text_read=text_read)
+    print(data)
+    return render_template('ocr.html',data=data)
 
 if __name__ == "__main__":
     app.run(debug=True)

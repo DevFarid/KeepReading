@@ -54,7 +54,7 @@ class BOW(TrainingRepresentation):
         return bow_representation
     
     def represent_data(self, im, param: dict):
-        return list(BOW("BOW.txt").search(im).values())
+        return list(BOW("lib/BOW.txt").search(im).values())
           
     def getDictionary(self) -> dict:
         return self.bag_of_words

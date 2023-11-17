@@ -96,7 +96,7 @@ def getMOD(image, drive_types: list, text: list, training_data_locs: list, accur
     model_predictions = {}
 
     model_drive = predict(image, BW_model[0], BWHistogram(), BW_model[1])
-    model_drive_2 = predict(image, BOW_model[0], BOW("BOW.txt"), BOW_model[1])
+    model_drive_2 = predict(image, BOW_model[0], BOW("lib/BOW.txt"), BOW_model[1])
     #These are returning lists of potential matches
 
     model_predictions["BWHist"] = model_drive
