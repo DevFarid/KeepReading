@@ -10,8 +10,11 @@ import json
 #from lib.OCR import OCR
 from lib.drive_scanner_runner import ModelRunner
 
+from lib.utilities import ConstantFilePaths
+
+ConstantFilePaths(True)
 app = Flask(__name__)
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(-0)
 
 def gen_frames():  
     while True:

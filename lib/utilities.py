@@ -9,6 +9,20 @@ class ConstantNames():
     BOW = "BOW"
     BWHIST = "BWHist"
 
+class Singleton(type):
+    _instances = {}
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]
+    
+class ConstantFilePaths(metaclass=Singleton):
+    bow = "BOW.txt"
+    def __init__(self, ui_call=False):
+        if ui_call:
+            self.bow = "lib\\BOW.txt"
+    pass
+
 ### CONVERTS A CATEGORY TO A ONE-HOT ###
 def convert_one_hot(label: str, label_dict: dict):
     if label in list(label_dict.keys()):
