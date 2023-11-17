@@ -82,5 +82,5 @@ csv_loc = "..\\data\\15021026 1 fixed.csv"
 training_data = process_training(load_training(image_loc, csv_loc, args['exclusions'].split(",")[:-1]))
 
 train_on(training_data, KNearest(), BWHistogram(), ConstantNames.KNEAREST, ConstantNames.BWHIST)
-train_on(training_data, KNearest(), BOW("BOW.txt"), ConstantNames.KNEAREST, ConstantNames.BOW)
+train_on(training_data, KNearest(), BOW("lib/BOW.txt"), ConstantNames.KNEAREST, ConstantNames.BOW)
 

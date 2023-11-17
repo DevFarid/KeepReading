@@ -7,9 +7,6 @@
     <script src="../static/functions.js">
 
     </script>
-    <script type="text/javascript">
-        text_read = 
-    </script>
 </head>
 
 <body>
@@ -41,9 +38,15 @@
         <div class="label-container">
             <div class="label">Label Info</div>
             <ul>
-                <li>PID#: <span id="pid"></span></li>
-                <li>S/N: <span id="serial"></span></li>
-                <li>P/N: <span id="part"></span></li>
+                
+                <!-- {% for item in data %}
+                    PID: {{ item['PID'][1] }}
+                    S/N: {{ item['SN'][1] }}
+                    M/N: {{ item['MN'][1]}}
+                {% endfor %} -->
+                <li>PID#: {{data[0].PID[1]}}<span id="pid"></span></li>
+                <li>S/N: {{data[0].SN[1]}}<span id="serial"></span></li>
+                <li>M/N: {{data[0].MN}}<span id="part"></span></li>
             </ul>
         
             <!-- button container, edit approve -->
@@ -64,15 +67,4 @@
             
         </div>
     </div>
-    <script>
-        prompt("1")
-        var confidence_content= "{{confi_lv}}";
-        var text_content = "{{text_read}}";
-        console.log(confi_lv);
-        console.log(text_read);
-
-        var list_text = text_content
-        prompt(text_content)
-
-    </script>
 </body>
