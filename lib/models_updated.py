@@ -1,48 +1,40 @@
 from data_representation_abstracted_updated import TrainingRepresentation
-from utilities import convert_all_to_one_hots
+from utilities import convert_all_to_one_hots, ConstantNames
+
+from queue import Queue
+from threading import Thread
 
 import numpy as np
 import yaml
 import cv2
 import h5py
+import csv
 
 class CModel():
     def predict(image, data_rep_alg: TrainingRepresentation, parameters: dict):
         pass
 
     @staticmethod
-    def load(X_loc, Y_loc, dict_loc):
-        f1 = h5py.File(X_loc, "r")
-        f2 = h5py.File(Y_loc, "r")
+    def load(model_loc, dict_loc) -> dict:
+        saved_model = {}
 
-        X = np.array(f1["data"])
-        Y = np.array(f2["labels"])
+        model_file = h5py.File(model_loc + "\\model.hdf5", "r")
+
+        for name in model_file.keys():
+            saved_model[name] = np.array(model_file[name])
+
         Y_dict = {}
-
         with open(dict_loc, "r") as ymlfile:
             Y_dict = yaml.safe_load(ymlfile)
         
-        return X, Y, Y_dict
+        model_file.close()
+        return saved_model, Y_dict
+    
+    def train(self, X, Y, Y_dict) -> dict:
+        return {"X": X, "Y": Y, "Y_dict": Y_dict}
 
-    def train(self, training_rep: TrainingRepresentation, image_folder: str, csv_path: str, num_threads=10):
-        ### LOADS EVERY IMAGE IN ###
-        def load_training(image_folder, csv_path) -> dict:
-            drive_dict = {}
-            with(open(csv_path)) as csv_file:
-                tablereader = csv.DictReader(csv_file)
-                for row in tablereader:
-                    row['Image'] = cv2.imread(image_folder + "\\" + row['PID'] + ".jpg")
-                    drive_dict[row['PID']] = row
-            return drive_dict
-
-        ### LABELS EACH IMAGE ###
-        def process_training(drive_dict: dict):
-            training_labels = {}
-            PIDs = list(drive_dict.keys())
-            for PID in PIDs:
-                training_labels[PID] = {'label': drive_dict[PID]['Model'] + drive_dict[PID]['Manufacturer'], 'image': drive_dict[PID]['Image']}
-            return training_labels
-
+    @staticmethod
+    def represent_images_as_data(training_data: dict, training_rep: TrainingRepresentation, num_threads=10):
         ### REPRESENTS EACH IMAGE ACCORDING TO PASSED TRAINING-REPRESENTER ###
         def represent_training(training_labels: dict, training_rep: TrainingRepresentation, parameters={}):
             represented_training = []
@@ -82,9 +74,8 @@ class CModel():
                 represented_training.append(r_queue.get())
 
             return represented_training
-        ### END HELPER METHODS ###
+        ### END HELPER METHOD ###
 
-        training_data = process_training(load_training(image_folder, csv_path))
         represented_training = represent_training(training_data, training_rep, parameters={'optimal_size': training_data[list(training_data.keys())[0]]['image'].shape[1]})
         Y = [entry[0] for entry in represented_training]
         X = [entry[1] for entry in represented_training]
@@ -227,9 +218,11 @@ class KNearest(CModel):
         best_scores = [Y_dict[cats[scores.index(sorted_copy[i])]] for i in range(top_score_length)]
         return list(set(best_scores))
 
-    def train(self, training_rep: TrainingRepresentation, image_folder: str, csv_path: str, num_threads=10):
-        return super().train(training_rep, image_folder, csv_path, num_threads)
+    def train(self, X, Y, Y_train):
+        return super().train(X, Y, Y_train)
     
-    def load(self, X_loc, Y_loc, Y_dict_loc):
-        X, Y, Y_dict = super().load(X_loc, Y_loc, Y_dict_loc)
+    def load(self, model_loc, Y_dict_loc, training_representation_name: str):
+        model_params, Y_dict = CModel.load(model_loc, Y_dict_loc)
+        X = model_params["X_" + training_representation_name + "_" + ConstantNames.KNEAREST]
+        Y = model_params["Y_" + training_representation_name + "_" + ConstantNames.KNEAREST]
         self.__training = [X, Y, Y_dict]

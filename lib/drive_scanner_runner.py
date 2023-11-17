@@ -9,11 +9,13 @@ import os
 import platform
 
 from queue import Queue
-from threading import Thread
+from threading import Thread, Lock
 
 if platform.system() == 'Windows':
     pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
+def get_PID_only(file_name):
+    return file_name[:file_name.find(".jpg")]
 # arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-i", "--image",
@@ -38,6 +40,9 @@ ap.add_argument("--threads",
 ap.add_argument("--accuracy",
                 help="turns on \'accuracy\' mode to test accuracy of model",
                 default=False)
+ap.add_argument("--exclusions",
+                help="images to exclude",
+                default="")
 
 args = vars(ap.parse_args())
 
@@ -67,7 +72,8 @@ if not args['batch']:
 
 else:
     all_files = os.listdir(args['image'])
-    selected_files = [os.path.join(args['image'], file) for file in all_files if file.endswith(args['extension'])]
+    exclusions = args['exclusions'].split(',')[:-1]
+    selected_files = [os.path.join(args['image'], file) for file in all_files if (file.endswith(args['extension']) and get_PID_only(file) not in exclusions)]
 
     images = [(cv2.imread(image_loc), image_loc) for image_loc in selected_files]
     d_queue = Queue()
@@ -83,6 +89,7 @@ else:
         results = pytesseract.image_to_string(image, output_type=Output.DICT)
         return results.copy()
     
+    MUTEX = Lock()
     def image_processing_worker():
         while True:
             image_info = d_queue.get()
@@ -91,7 +98,11 @@ else:
             image = image_info[0]
             image_loc = image_info[1]
             ocr_text = process_image(image)
-            results = [image_loc, getPID(ocr_text, image), getSER(ocr_text, image), getMOD(image, DRIVES, ocr_text, args['trained_data'], args['accuracy'])]
+
+            with MUTEX:
+                modelNumber = getMOD(image, DRIVES, ocr_text, args['trained_data'], args['accuracy'])
+
+            results = [image_loc, getPID(ocr_text, image), getSER(ocr_text, image), modelNumber]
 
             r_queue.put(results.copy())
             d_queue.task_done()

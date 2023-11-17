@@ -1,7 +1,7 @@
 import csv
 
 results = []
-with open("scan_results_batch.txt") as txtfile:
+with open("test_results.txt") as txtfile:
     while True:
         line = txtfile.readline()
         if not line:
@@ -32,7 +32,7 @@ for result in results:
     if ser_model_dict[result[0]]['Model'] in result[3]:
         accuracies[2][0] += 1
     else:
-        accuracies[1][1] += 1
+        accuracies[2][1] += 1
 
 print(f'PID Accuracy: {(accuracies[0][0] / (accuracies[0][0] + accuracies[0][1])) * 100}% Correct out of {accuracies[0][0] + accuracies[0][1]}')
 print(f'S/N Accuracy: {(accuracies[1][0] / (accuracies[1][0] + accuracies[1][1])) * 100}% Correct out of {accuracies[1][0] + accuracies[1][1]}')

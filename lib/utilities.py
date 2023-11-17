@@ -1,5 +1,14 @@
 import numpy as np
 
+## CONSTANTS ##
+class ConstantNames():
+    #algorithms
+    KNEAREST = "KNearest"
+
+    #data reps
+    BOW = "BOW"
+    BWHIST = "BWHist"
+
 ### CONVERTS A CATEGORY TO A ONE-HOT ###
 def convert_one_hot(label: str, label_dict: dict):
     if label in list(label_dict.keys()):
