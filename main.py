@@ -10,6 +10,7 @@ import json
 
 app = Flask(__name__)
 camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(0)
 
 def gen_frames():  
     while True:
