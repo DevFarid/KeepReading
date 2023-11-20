@@ -9,14 +9,14 @@ with open("test_results.txt") as txtfile:
         results.append(line.split(sep=','))
 
 ser_model_dict = {}
-with open("..\\data\\15021026 1 fixed.csv", "r") as csvfile:
+with open("..\\..\\data\\15021026 1 fixed 1.csv", "r") as csvfile:
     tablereader = csv.DictReader(csvfile)
     for row in tablereader:
         ser_model_dict[row['PID']] = {'SerialNumber': row['SerialNumber'], 'Model':row['Model']}
 
 results = [[result.strip() for result in entry] for entry in results]
 for i in range(len(results)):
-    results[i][0] = results[i][0][9:16]
+    results[i][0] = results[i][0][12:19] #should be 9:16
 
 accuracies = [[0,0],[0,0],[0,0]]
 

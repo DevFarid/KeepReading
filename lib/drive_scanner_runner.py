@@ -94,7 +94,7 @@ class ModelRunner():
             final_list = []
             for result in processed_results:
                 final_list.append({"drive_label": result[0], "PID": result[1][1], "SN": result[2][1], "MN": result[3]})
-                return final_list
+            return final_list
 
 if __name__ == "__main__":
     # arguments

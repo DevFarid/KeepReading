@@ -9,7 +9,7 @@ import numpy as np
 def get_inverse_exclusions(all_relevant_files: list, exclusions: list):
     return [file[len(image_arg + "\\"):file.find(".jpg")] for file in all_relevant_files if file[len(image_arg + "\\"):file.find(".jpg")] not in exclusions]
 
-image_arg = "..\\\\data"
+image_arg = "..\\..\\\\data"
 model_folder = "training_and_validation"
 batch = "True"
 test_result_file = "test_results.txt"
