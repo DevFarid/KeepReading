@@ -10,6 +10,7 @@ import platform
 
 from queue import Queue
 from threading import Thread, Lock
+from CropInfoReader import CropInfoReader
 
 if platform.system() == 'Windows':
     pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -24,19 +25,33 @@ class ModelRunner():
 
     @staticmethod
     def run(arg_image: list, arg_training_data_path: str, arg_batch=False, arg_extension=".jpg", arg_threads=10, arg_results="", arg_accuracy=False, arg_exclusions="", ui=False):
+        crop_info = CropInfoReader.getCropInfo()
         if ui:
             ConstantFilePaths(True)
         if not arg_batch:
+            # pre-process image
+            arg_image = [Preprocess.crop_background(image) for image in arg_image]
             # load image
             im_and_text = [(image, pytesseract.image_to_data(image, output_type=Output.DICT)['text']) for image in arg_image]
-            # getPID
-            PIDs = [getPID(entry[1], entry[0]) for entry in im_and_text]
-
-            # getSN
-            SNs = [getSER(entry[1], entry[0]) for entry in im_and_text]
-
-            # getMOD
-            MODs = [getMOD(entry[0], DRIVES, entry[1], arg_training_data_path) for entry in im_and_text]
+            PIDs = []
+            SNs = []
+            MODs = []
+            
+            for entry in im_and_text:
+                # getPID
+                PIDs.append(getPID(entry[1], entry[0]))
+                # getMOD
+                modelN = getMOD(entry[0], DRIVES, entry[1], arg_training_data_path)
+                MODs.append(modelN)
+                # Remove manufactorer at the end of modelN
+                # modelN = str(modelN)
+                # for i in DRIVES:
+                #     if i in modelN:
+                #         modelN = modelN.replace(i, "")
+                cropped_image = Preprocess.crop_to_ser_no(entry[0], str(modelN), crop_info)
+                
+                # getSN
+                SNs.append(getSER(cropped_image, modelN))
 
             return [{"PID": PIDs[0], "SN": SNs[0], "MN": MODs[0]}]
         else:
@@ -61,6 +76,13 @@ class ModelRunner():
                 results = pytesseract.image_to_string(image, output_type=Output.DICT)
                 return results.copy()
             
+            def crop_image_based_on_MOD(image, modelN):
+                modelN = str(modelN)
+                for i in DRIVES:
+                    if i in modelN:
+                        modelN = modelN.replace(i, "")
+                return Preprocess.crop_to_ser_no(image, modelN, crop_info)
+                
             MUTEX = Lock()
             def image_processing_worker():
                 while True:
@@ -74,7 +96,8 @@ class ModelRunner():
                     with MUTEX:
                         modelNumber = getMOD(image, DRIVES, ocr_text, arg_training_data_path, arg_accuracy)
 
-                    results = [image_loc, getPID(ocr_text, image), getSER(ocr_text, image), modelNumber]
+                    cropped_image = crop_image_based_on_MOD(image, modelNumber)
+                    results = [image_loc, getPID(ocr_text, image), getSER(cropped_image, modelNumber), modelNumber]
 
                     r_queue.put(results.copy())
                     d_queue.task_done()
@@ -156,9 +179,9 @@ if __name__ == "__main__":
 
     model_results = ModelRunner.run(arg_image, args_training_data, arg_batch=args_batch, arg_threads=args_threads, arg_extension=args_extension, arg_exclusions=args_exclusions)
 
-    if not args['batch']:
+    if args['batch']:
         for i, result in enumerate(model_results):
-            with open(args["results"], "w") as res_file:
+            with open(args["results"], "a") as res_file:
                 res_file.write(f'\tDrive Number: {i}')
                 res_file.write(f'\tPID: {result["PID"]}')
                 res_file.write(f'\tSerial Number: {result["SN"]}')
@@ -166,8 +189,10 @@ if __name__ == "__main__":
                 res_file.write('\n')
     else:
         for result in model_results:
-            with open(args["results"], "a") as res_file:
-                res_file.write(f'{result["drive_label"]},{result["PID"]},{result["SN"]},{result["MN"]}')
+            with open(args["results"], "w") as res_file:
+                res_file.write(f'\tPID: {result["PID"]}')
+                res_file.write(f'\tSerial Number: {result["SN"]}')
+                res_file.write(f'\tModel Number: {result["MN"]}')
                 res_file.write('\n')
 
 

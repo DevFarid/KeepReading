@@ -33,7 +33,6 @@ class BarcodeDetection:
 					"y": t[3][1],
 				},
 			}
-			print(coords["top_left"]["y"])
 			# Use coordinates of barcodes to cover them up with rectangles, improving OCR results
 			image = cv2.rectangle(
 				image, (coords["top_left"]["x"],coords["top_left"]["y"]),(coords["bottom_right"]["x"],coords["bottom_right"]["y"]), (0, 0, 255), -1)
