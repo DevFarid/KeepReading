@@ -2,8 +2,6 @@
 dell
 d@ll
 dll
-config
-exos
 constellation
 oconstellation.2
 0453kg
@@ -48,3 +46,31 @@ $4600
 seagate
 barracuda
 st14
+
+// FUJITSU
+fujitsu
+fujitsu limited
+1999-07
+
+// HITACHI
+hitachi
+
+
+// ESERVER
+server
+@server
+eserver
+
+// WD
+western
+6178056
+6178o56
+5956196
+6289484
+6263459
+westerndigital.com
+drive parameters:
+
+// TOSHIBA
+toshiba
+<12g>
