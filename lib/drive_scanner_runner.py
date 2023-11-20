@@ -152,7 +152,9 @@ if __name__ == "__main__":
 
     # case with single image
     if not args['batch']:
-        arg_image = [cv2.imread("../" + args['image'])]
+        if "lib" in args['trained_data']:
+            ConstantFilePaths(True)
+        arg_image = [cv2.imread("..\\" + args['image'])]
         args_training_data = args['trained_data']
         args_exclusions = args['exclusions']
         args_extension = args['extension']

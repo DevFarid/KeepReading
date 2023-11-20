@@ -4,6 +4,7 @@ from OCR import ObjectCharacterRecognition
 from concurrent.futures import ThreadPoolExecutor
 
 from data_representation_abstracted_updated import *
+from utilities import ConstantFilePaths
 
 class BOW(TrainingRepresentation):
     """
@@ -54,12 +55,12 @@ class BOW(TrainingRepresentation):
         return bow_representation
     
     def represent_data(self, im, param: dict):
-        return list(BOW("BOW.txt").search(im).values())
+        return list(BOW(ConstantFilePaths().bow).search(im).values())
           
     def getDictionary(self) -> dict:
         return self.bag_of_words
     
-
+"""
 def represent_training2(training_labels: dict, parameters={}):
     represented_training = []
     PIDs = list(training_labels.keys())
@@ -119,16 +120,5 @@ def compute_averages(img_data: list):
             fixed_list.append(float(num))
         result.append([entry[0], fixed_list])
     return result
-    
-if __name__ == "__main__":
-    training_data = process_training(load_training("data", "data\\15021026 1 fixed.csv"))
-    represented_training = represent_training2(training_data)
-
-    with open("average_bow.yaml", "w") as yml_file:
-        yaml.safe_dump(compute_averages(represented_training), yml_file)
-"""
-    bow = BOW('bow/BOW.txt')
-    x = list(bow.search(cv2.imread("4421225.jpg")).values())
-    print(x)
 """
     

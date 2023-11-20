@@ -4,6 +4,7 @@ from bow import BOW
 from utilities import ConstantNames
 import h5py
 import yaml
+import utilities
 
 import argparse
 import os
@@ -76,11 +77,12 @@ def process_training(drive_dict: dict):
     return training_labels
 
 #Setting up training
-image_loc = "..\\data"
-csv_loc = "..\\data\\15021026 1 fixed.csv"
+image_loc = "..\\..\\data"
+csv_loc = "..\\..\\data\\15021026 1 fixed 1.csv"
 
 training_data = process_training(load_training(image_loc, csv_loc, args['exclusions'].split(",")[:-1]))
 
+
 train_on(training_data, KNearest(), BWHistogram(), ConstantNames.KNEAREST, ConstantNames.BWHIST)
-train_on(training_data, KNearest(), BOW("BOW.txt"), ConstantNames.KNEAREST, ConstantNames.BOW)
+train_on(training_data, KNearest(), BOW(utilities.ConstantFilePaths().bow), ConstantNames.KNEAREST, ConstantNames.BOW)
 

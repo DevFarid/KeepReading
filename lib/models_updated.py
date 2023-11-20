@@ -129,7 +129,7 @@ class ModelUtils():
             for prediction in BWHist:
                 list_build[prediction] = strcomp(takeout_brand(prediction, drive_types), model_dict["OCR"].strip())
             for prediction in BOW:
-                list_build[prediction] = strcomp(takeout_brand(prediction, drive_types), model_dict["BOW"].strip())
+                list_build[prediction] = strcomp(takeout_brand(prediction, drive_types), model_dict["OCR"].strip())
             
             for prediction in list(list_build.keys()):
                 results[prediction] -= list_build[prediction]
