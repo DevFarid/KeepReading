@@ -16,13 +16,27 @@ from preprocessing import *
 from data_representation_abstracted_updated import TrainingRepresentation, BWHistogram
 from bow import BOW
 from utilities import ConstantNames
+import platform
 
 # Threading
 from queue import *
 from threading import Thread
 
 # Set pytesseract path
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+if platform.system() == 'Windows':
+    pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
+def processSERMODEntry(num: str):
+    special_chars = {"*", "\"", " ", "+", ":", "\n", "."}
+    for special_char in special_chars:
+        while special_char in num:
+            if num.index(special_char) == 0:
+                num = num[1:]
+            elif num.index(special_char) == len(num) - 1:
+                num = num[:-1]
+            else:
+                num = num[0:num.index(special_char)] + num[num.index(special_char) + 1:]
+    return num
 
 # load models
 def load_models(trained_data_loc, K=1, accuracy_mode=False):
@@ -67,19 +81,24 @@ def getPID(text: list, im, rotation=0):
         return False, ""
 
 # getSER
-def getSER(text: list, im, rotation=0):
-    def containsSERVar(text: list):
-        for entry in text:
-            if "S/N" in entry:
-                return True, entry
-            elif "Ser" in entry:
-                return True, entry
+def getSER(im, model, rotation=0):
+    def getSerVar(text: list):
+        for i in range(len(text)):
+            sn = processSERMODEntry(text[i])
+            if sn.upper() == "SN" and i < len(text) - 1:
+                return True, i+1
+            if (sn.upper() == "SER" or sn.upper() == "SERIAL") and i < len(text) - 2:
+                return True, i+2
         return False, ""
-    truth, name = containsSERVar(text)
+                
+    text = pytesseract.image_to_data(im, output_type=Output.DICT)['text']
+    truth, index = getSerVar(text)
     if truth:
-        return True, text[text.index(name) + 1]
-    else:
-        return False, ""
+        return True, text[index]
+    elif rotation != 3:
+        received, answer = getSER(np.rot90(im), model, rotation + 1)
+        return received, answer
+    return False, ""
 
 # getMOD
 def getMOD(image, drive_types: list, text: list, training_data_locs: list, accuracy_mode=False):
