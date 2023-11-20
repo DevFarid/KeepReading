@@ -19,7 +19,7 @@ def get_PID_only(file_name):
     return file_name[:file_name.find(".jpg")]
 
 
-DRIVES = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO"] #MAKE THIS A GLOBAL THING
+DRIVES = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO", "HITACHI", "FUJITSU", "ESERVER", "WD"] #MAKE THIS A GLOBAL THING
 
 class ModelRunner():
 
@@ -49,7 +49,9 @@ class ModelRunner():
                 #     if i in modelN:
                 #         modelN = modelN.replace(i, "")
                 cropped_image = Preprocess.crop_to_ser_no(entry[0], str(modelN), crop_info)
-                
+                import matplotlib.pyplot as plt
+                plt.imshow(cropped_image)
+                plt.show()
                 # getSN
                 SNs.append(getSER(cropped_image, modelN))
 
@@ -96,6 +98,12 @@ class ModelRunner():
                     with MUTEX:
                         modelNumber = getMOD(image, DRIVES, ocr_text, arg_training_data_path, arg_accuracy)
 
+                    def remove_suffix(word: str, removals: list):
+                        for removal in removals:
+                            if word.endswith(removal):
+                                return word[:word.find(removal)]
+                            
+                    modelNumber = remove_suffix(modelNumber, DRIVES)
                     cropped_image = crop_image_based_on_MOD(image, modelNumber)
                     results = [image_loc, getPID(ocr_text, image), getSER(cropped_image, modelNumber), modelNumber]
 
@@ -182,11 +190,15 @@ if __name__ == "__main__":
     if args['batch']:
         for i, result in enumerate(model_results):
             with open(args["results"], "a") as res_file:
+                """
                 res_file.write(f'\tDrive Number: {i}')
                 res_file.write(f'\tPID: {result["PID"]}')
                 res_file.write(f'\tSerial Number: {result["SN"]}')
                 res_file.write(f'\tModel Number: {result["MN"]}')
                 res_file.write('\n')
+                """
+                res_file.write(f'{result["drive_label"]},{result["PID"]},{result["SN"]},{result["MN"]}')
+                res_file.write("\n")
     else:
         for result in model_results:
             with open(args["results"], "w") as res_file:

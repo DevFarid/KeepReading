@@ -6,6 +6,7 @@ import cv2
 from rembg import remove
 from skimage.filters import threshold_otsu
 from barcode_detection import BarcodeDetection
+import matplotlib.pyplot as plt
 
 class Preprocess():
 
@@ -28,6 +29,7 @@ class Preprocess():
     def resize(img):
         RESIZE_WIDTH = 1000
         RESIZE_HEIGHT = 1200
+
         return cv2.resize(img, (RESIZE_WIDTH,RESIZE_HEIGHT))
 
     def crop_background(img):
