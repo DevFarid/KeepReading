@@ -45,7 +45,7 @@ $4600
 // SEAGATE
 seagate
 barracuda
-st14
+
 
 // FUJITSU
 fujitsu
