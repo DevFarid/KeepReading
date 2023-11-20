@@ -49,9 +49,6 @@ class ModelRunner():
                 #     if i in modelN:
                 #         modelN = modelN.replace(i, "")
                 cropped_image = Preprocess.crop_to_ser_no(entry[0], str(modelN), crop_info)
-                import matplotlib.pyplot as plt
-                plt.imshow(cropped_image)
-                plt.show()
                 # getSN
                 SNs.append(getSER(cropped_image, modelN))
 

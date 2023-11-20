@@ -1,7 +1,7 @@
 import csv
 
 results = []
-with open("training_results.txt") as txtfile:
+with open("test_results.txt") as txtfile:
     while True:
         line = txtfile.readline()
         if not line:
