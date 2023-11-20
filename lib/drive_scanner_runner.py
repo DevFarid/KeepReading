@@ -23,7 +23,9 @@ DRIVES = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO"] #MAKE THIS
 class ModelRunner():
 
     @staticmethod
-    def run(arg_image: list, arg_training_data_path: str, arg_batch=False, arg_extension=".jpg", arg_threads=10, arg_results="", arg_accuracy=False, arg_exclusions=""):
+    def run(arg_image: list, arg_training_data_path: str, arg_batch=False, arg_extension=".jpg", arg_threads=10, arg_results="", arg_accuracy=False, arg_exclusions="", ui=False):
+        if ui:
+            ConstantFilePaths(True)
         if not arg_batch:
             # load image
             im_and_text = [(image, pytesseract.image_to_data(image, output_type=Output.DICT)['text']) for image in arg_image]

@@ -9,11 +9,9 @@ import threading
 import json
 #from lib.OCR import OCR
 from lib.drive_scanner_runner import ModelRunner
-from lib.utilities import ConstantFilePaths
 
-ConstantFilePaths(True)
 app = Flask(__name__)
-camera = cv2.VideoCapture(-0)
+camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
 def gen_frames():  
     while True:
@@ -29,7 +27,7 @@ def gen_frames():
 def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
-    data = ModelRunner.run([cv2.imread("lib/data/4421199.jpg")], "lib/model_updated")
+    data = ModelRunner.run([frame], "lib/model_with_photos", ui=True)
     # cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
             
