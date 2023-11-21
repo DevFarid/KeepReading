@@ -6,7 +6,7 @@ class CropInfoReader:
 	def getCropInfo():
 		cropDimension = {}
 		# get crop-dimensions from txt file
-		with open('crop_details.txt',"r") as file:
+		with open('lib\\crop_details.txt',"r") as file:
 			lines = file.readlines()
 			model = ""
 			dimensions = ""
