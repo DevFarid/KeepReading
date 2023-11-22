@@ -24,8 +24,8 @@
 
 .viewfinder {
     aspect-ratio: 4 / 3;
-    max-height: 100%;
-    max-width: 100%;
+    height: 100%;
+    width: 100%;
     position: absolute;
     top: 0;
     left: 0;
@@ -40,22 +40,21 @@
     padding: 8px 0 0;
     background-color: #dfdfdf;
     grid-column: 2 / span 1;
-    grid-row: 2 / span 2;
+    grid-row: 1 / span 3;
     position: relative;
 }
 
 .label-container li {
     font-size: 20px;
     list-style-type: none;
-    margin: 4px 0;
+    margin: 12px 0;
 }
 
-.text-container {
-    padding: 8px 0 0;
+.file-container {
+    padding: 0px 0 0;
     background-color: #dfdfdf;
     grid-column: 2 / span 1;
     grid-row: 4 / span 3;
-    overflow: scroll;
 }
 
 .camera-container {
@@ -63,10 +62,14 @@
     grid-row: 1 / span 5;
 }
 
-.label {
+.label-info {
     text-align: center;
     font-size: 24px;
+    margin-bottom: 24px;
+}
 
+.label-text {
+    font-size: 22px;
 }
 
 #read-text {
@@ -90,14 +93,15 @@
 .button-label-container {
     position: absolute;
     bottom: 0;
-
+    width: 100%;
+    text-align: center;
 }
 
 .button {
-    background-color: #4CAF50;
+    background-color: #3d3d3d;
     border: none;
     color: white;
-    padding: 15px 32px;
+    padding: 15px 28px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -105,14 +109,192 @@
     border-radius: 12px;
 }
 
-.button-left{
-    float: left; 
-    width: 50%;
+.button:hover {
+    background-color: #2b2b2b;
+}
 
+.button:active {
+    background-color: #1a1a1a;
+}
+
+.button-left{
+    display: inline-block;
 }
 
 .button-right{
-    float: right;
-    width: 50%;
-
+    display: inline-block;
 }
+
+.label-button {
+    border: none;
+    color: white;
+    padding: 10px 0;
+    width: 110px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 12px;
+    margin: 0 6px 0px;
+}
+
+#button-approve {
+    background-color: #4CAF50;
+}
+
+#button-approve:hover {
+    background-color: #47a54a;
+}
+
+#button-approve:active {
+    background-color: #3f9442;
+}
+
+#button-edit {
+    background-color: #3d3d3d;
+}
+
+#button-edit:hover {
+    background-color: #2b2b2b;
+}
+
+#button-edit:active {
+    background-color: #1a1a1a;
+}
+
+/* modal */
+
+.modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.4rem;
+    width: 450px;
+    padding: 1.3rem;
+    min-height: 250px;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 15px;
+    z-index: 2;
+}
+
+.modal .flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modal-title {
+    text-align: center;
+    font-size: 36px;
+    margin-top: -12px;
+}
+
+.modal input {
+    padding: 0.7rem 0.35rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1.1em;
+}
+
+.modal label {
+    margin-left: 4px;
+    font-size: 20px;
+}
+
+.modal p {
+    font-size: 0.9rem;
+    color: #777;
+    margin: 0.4rem 0 0.2rem;
+}
+
+button {
+    cursor: pointer;
+    border: none;
+    font-weight: 600;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.4rem;
+    margin-top: 8px;
+    font-weight: 700;
+    background-color: black;
+    color: white;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 1em;
+}
+  
+.btn-open {
+    position: absolute;
+    bottom: 150px;
+}
+  
+.btn-close {
+    transform: translate(422px, -7px);
+    padding: 0.5rem 0.7rem;
+    background: #eee;
+    border-radius: 50%;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+  
+.hidden {
+    display: none;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.upload-button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.custom-file-upload {
+    color: #fff;
+    display: inline-block;
+    text-align: center;
+    padding: 10px 0;
+    cursor: pointer;
+    width: 50%;
+    font-size: 16px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif
+}
+
+#file-upload {
+    background-color: #4e4e4e;
+}
+
+#file-submit {
+    background-color: #2a2a2a;
+}
+
+.image-container {
+    height: calc(100% - 39px);
+    width: 100%;
+    text-align: center;
+}
+
+#upload-image {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: cover;
+}
+  

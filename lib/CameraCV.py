@@ -9,7 +9,7 @@ class CameraCV:
     Created by Farid on 09/13/2023.
     """
     def __init__(self) -> None:
-        self.video = cv2.VideoCapture(0)
+        # self.video = cv2.VideoCapture(0)
         self.video.set(cv2.CAP_PROP_FRAME_WIDTH, 1080)
         self.video.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 

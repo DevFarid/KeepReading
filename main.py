@@ -3,15 +3,20 @@ sys.path.insert(1, 'lib')
 
 from lib.OCR import ObjectCharacterRecognition
 from lib.drive_scanner_runner import ModelRunner
-from flask import Flask, render_template, Response
+from lib.db import OcrResult, OcrDatabase, Api
+from flask import Flask, render_template, Response, request
 import cv2
+import numpy as np
+from PIL import Image
 import threading
-import json
+from datetime import datetime
 #from lib.OCR import OCR
 from lib.drive_scanner_runner import ModelRunner
 
 app = Flask(__name__)
-camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+# camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+camera = cv2.VideoCapture(0)
+db = OcrDatabase()
 
 def gen_frames():  
     while True:
@@ -26,8 +31,9 @@ def gen_frames():
             
 def gen_frame():
     _, frame = camera.read()
+    frame = cv2.imread('data/4421175.jpg')
     #get data that contain image, text, confidence
-    data = ModelRunner.run([frame], "lib/model_with_photos", ui=True)
+    data = ModelRunner.run([frame], "lib/all_training", ui=True)
     # cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
             
@@ -43,6 +49,30 @@ def video_feed():
 def capture_image():
     data = gen_frame()
     print(data)
+    return render_template('ocr.html',data=data)
+
+@app.route('/handle_data/', methods=['POST'])
+def handle_data():
+    pid = request.form['pid']
+    model = request.form['model']
+    serialNumber = request.form['serial']
+    userReported = request.form['userReported']
+    if userReported[0] == 'T':
+        userReported = True
+    else:
+        userReported = False
+    dt = datetime.now()
+    ocr = OcrResult(int(pid), 0, '', model, '', serialNumber, userReported, dt).__dict__
+    post = Api.insert(ocr, db.col)
+    return render_template('index.html')
+
+@app.route('/upload_image/', methods=['POST'])
+def upload_image():
+    data = request.files['file']
+    img = Image.open(data)
+    img = np.array(img)
+    cv2.imwrite('static/assets/capture.jpg', img)
+    data = ModelRunner.run([img], "lib/all_training", ui=True)
     return render_template('ocr.html',data=data)
 
 if __name__ == "__main__":

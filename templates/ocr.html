@@ -13,6 +13,25 @@
     <div class="title"> 
         <h2>KeepReading</h2>
     </div>
+    <section class="modal hidden">
+        <div class="flex">
+          <button class="btn-close">⨉</button>
+        </div>
+        <div>
+          <div class="modal-title">Edit Drive Info</div>
+        </div>
+        <form action="http://localhost:5000/handle_data" method="post">
+            <label for="pid" class="label-info">PID#: </label><br>
+            <input type="text" name="pid" value="{{data[0].PID[1]}}" /><br>
+            <label for="serial" class="label-info">S/N: </label><br>
+            <input type="text" name="serial" value="{{data[0].SN[1]}}" /><br>
+            <label for="model" class="label-info">M/N: </label><br>
+            <input type="text" name="model" value="{{data[0].MN}}" /><br>
+            <input type="text" name="userReported" class="hidden" value="T">
+            <button type="submit" class="btn">Submit</button>
+        </form>
+      </section>
+      <div class="overlay hidden"></div>
     <div class="wrapper">
 
         <!-- camera container and captrue button-->
@@ -21,7 +40,7 @@
                 <img src="../static/assets/capture.jpg" class="viewfinder" id="frame">
             </div>
             <div class="button-container">
-                <button style="font-size:24px">Audio Control<i class="fa fa-microphone"></i></button>
+                <!-- <button style="font-size:24px">Audio Control<i class="fa fa-microphone"></i></button> -->
                 <form action="/">
                     <button class="button" type="submit">Reset</button>
                 </form>
@@ -29,42 +48,64 @@
         </div>
 
         <!-- model version container -->
-        <div class="model-container">
+        <!-- <div class="model-container">
             <div>Current Version</div>
             <div><button id="button-history">Version History</button></div>
-        </div>
+        </div> -->
 
         <!-- label information container -->
         <div class="label-container">
-            <div class="label">Label Info</div>
+            <div class="label-info">Label Info</div>
             <ul>
-                
-                <!-- {% for item in data %}
-                    PID: {{ item['PID'][1] }}
-                    S/N: {{ item['SN'][1] }}
-                    M/N: {{ item['MN'][1]}}
-                {% endfor %} -->
-                <li>PID#: {{data[0].PID[1]}}<span id="pid"></span></li>
-                <li>S/N: {{data[0].SN[1]}}<span id="serial"></span></li>
-                <li>M/N: {{data[0].MN}}<span id="part"></span></li>
+                <li><span id="pid" class="label-text">PID#: {{data[0].PID[1]}}</span></li>
+                <li><span id="serial" class="label-text">S/N: {{data[0].SN[1]}}</span></li>
+                <li><span id="part" class="label-text">M/N: {{data[0].MN}}</span></li>
             </ul>
         
             <!-- button container, edit approve -->
             <div class="button-label-container">
-
-                <div class="button-left"><button id="button-edit" type="submit">EDIT</button></div>
-                <div class="button-right"><button id="button-approve" type="submit">APPROVE</button></div>
-
+                <form action="http://localhost:5000/handle_data" method="post">
+                    
+                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button></div>
+                    <div class="button-right"><button id="button-approve" class="label-button" type="submit">APPROVE</button></div>
+                    <input type="text" name="pid" class="hidden" value="{{data[0].PID[1]}}">
+                    <input type="text" name="serial" class="hidden" value="{{data[0].SN[1]}}">
+                    <input type="text" name="model" class="hidden" value="{{data[0].MN}}">
+                    <input type="text" name="userReported" class="hidden" value="F">
+                </form>
             </div>
         </div>
 
 
-        <!-- text read container -->
-        <div class="text-container">
-            <div class="label">All Text Read</div>
-            <div id="read-text">TEXT</div>
-            <div id="confidence-lv">Confidence LV.</div>
-            
+        <!-- file upload container -->
+        <div class="file-container">
+            <form method="post" enctype="multipart/form-data" action="http://localhost:5000/upload_image">
+                <div class="upload-button-container">
+                    <label for="file" class="custom-file-upload" id="file-upload">
+                        <i class="fa fa-cloud-upload"></i> Choose image
+                    </label>
+                    <input id="file" name="file" type="file" accept=".jpg" onchange="loadFile(event)"/>
+                    <button class="custom-file-upload" id="file-submit">Upload</button>
+                </div>
+                <div class="image-container">
+                    <img id="upload-image" />
+                </div>
+            </form>
         </div>
     </div>
+    <script>
+        const modal = document.querySelector(".modal");
+        const overlay = document.querySelector(".overlay");
+        const openModalBtn = document.querySelector("#button-edit");
+        const closeModalBtn = document.querySelector(".btn-close");
+
+        openModalBtn.addEventListener("click", openModal);
+        closeModalBtn.addEventListener("click", closeModal);
+
+        document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+            closeModal();
+        }
+        });
+    </script>
 </body>
