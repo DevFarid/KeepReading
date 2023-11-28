@@ -4,13 +4,28 @@
     <style>
         @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
     </style>
+    <script src="../static/functions.js"></script>
 </head>
 
 <body>
-    <script src="../static/functions.js"></script>
     <div class="title">
         <h2>KeepReading</h2>
     </div>
+    <section class="modal hidden">
+        <div class="flex">
+          <button class="btn-close">⨉</button>
+        </div>
+        <div>
+          <h3>Edit drive info</h3>
+          <p>
+            paragraph
+          </p>
+        </div>
+      
+        <input type="email" id="email" placeholder="brendaneich@js.com" />
+        <button class="btn">Submit</button>
+      </section>
+      <div class="overlay hidden"></div>
     <div class="wrapper">
 
         <!-- camera container and captrue button-->
@@ -19,44 +34,52 @@
                 <img src="/video_feed" class="viewfinder" id="frame">
             </div>
             <div class="button-container">
-                <button style="font-size:24px">Audio Control<i class="fa fa-microphone"></i></button>
+                <!-- <button style="font-size:24px">Audio Control<i class="fa fa-microphone"></i></button> -->
                 <form action="/capture" method="get">
-                    <button class="button" type="submit">Capture</button>
+                    <button class="button" type="submit">CAPTURE</button>
                 </form>
             </div>
         </div>
 
         <!-- model version container -->
-        <div class="model-container">
+        <!-- <div class="model-container">
             <div>Current Version</div>
             <div><button id="button-history">Version History</button></div>
-        </div>
+        </div> -->
 
         <!-- label information container -->
         <div class="label-container">
-            <div class="label">Label Info</div>
+            <div class="label-info">Label Info</div>
             <ul>
-                <li>PID#: <span id="pid"></span></li>
-                <li>S/N: <span id="serial"></span></li>
-                <li>P/N: <span id="part"></span></li>
+                <li><span id="pid" class="label-text">PID#: </span></li>
+                <li><span id="serial" class="label-text">S/N: </span></li>
+                <li><span id="part" class="label-text">M/N: </span></li>
             </ul>
         
             <!-- button container, edit approve -->
             <div class="button-label-container">
-
-                <div class="button-left"><button id="button-edit" type="submit">EDIT</button></div>
-                <div class="button-right"><button id="button-approve" type="submit">APPROVE</button></div>
-
+                <form>
+                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button></div>
+                    <div class="button-right"><button id="button-approve" class="label-button" type="button">APPROVE</button></div>
+                </form>
             </div>
         </div>
 
 
-        <!-- text read container -->
-        <div class="text-container">
-            <div class="label">All Text Read</div>
-            <div id="read-text">TEXT</div>
-            <div id="confidence-lv">Confidence LV.</div>
-            
+        <!-- file upload container -->
+        <div class="file-container">
+            <form method="post" enctype="multipart/form-data" action="http://localhost:5000/upload_image">
+                <div class="upload-button-container">
+                    <label for="file" class="custom-file-upload" id="file-upload">
+                        <i class="fa fa-cloud-upload"></i> Choose image
+                    </label>
+                    <input id="file" name="file" type="file" accept=".jpg" onchange="loadFile(event)"/>
+                    <button class="custom-file-upload" id="file-submit">Upload</button>
+                </div>
+                <div class="image-container">
+                    <img id="upload-image" />
+                </div>
+            </form>
         </div>
     </div>
 </body>
