@@ -15,7 +15,7 @@ from lib.drive_scanner_runner import ModelRunner
 
 app = Flask(__name__)
 # camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 db = OcrDatabase()
 
 def gen_frames():  
@@ -31,11 +31,11 @@ def gen_frames():
             
 def gen_frame():
     _, frame = camera.read()
-    frame = cv2.imread('data/4421175.jpg')
     #get data that contain image, text, confidence
-    data = ModelRunner.run([frame], "lib/all_training", ui=True)
+    data = ModelRunner.run([frame], "lib/bow_updated_model", ui=True)
     # cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
+
             
 @app.route('/')
 def index():
