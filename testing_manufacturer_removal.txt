@@ -1,0 +1,1 @@
+	PID: (True, '4421660')	Serial Number: (False, '')	Model Number: HUC101812CSS205

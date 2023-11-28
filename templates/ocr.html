@@ -4,11 +4,13 @@
     <style>
         @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
     </style>
+    <script src="../static/functions.js">
+
+    </script>
 </head>
 
 <body>
-    <script src="../static/functions.js"></script>
-    <div class="title">
+    <div class="title"> 
         <h2>KeepReading</h2>
     </div>
     <div class="wrapper">
@@ -36,9 +38,15 @@
         <div class="label-container">
             <div class="label">Label Info</div>
             <ul>
-                <li>PID#: <span id="pid"></span></li>
-                <li>S/N: <span id="serial"></span></li>
-                <li>P/N: <span id="part"></span></li>
+                
+                <!-- {% for item in data %}
+                    PID: {{ item['PID'][1] }}
+                    S/N: {{ item['SN'][1] }}
+                    M/N: {{ item['MN'][1]}}
+                {% endfor %} -->
+                <li>PID#: {{data[0].PID[1]}}<span id="pid"></span></li>
+                <li>S/N: {{data[0].SN[1]}}<span id="serial"></span></li>
+                <li>M/N: {{data[0].MN}}<span id="part"></span></li>
             </ul>
         
             <!-- button container, edit approve -->

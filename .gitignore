@@ -1,7 +1,10 @@
 __pycache__/
 snapshot.jpg
+lib/data/*
 data/*
-tts/latest.mp3
+lib/latest.mp3
 env/*
 node_modules/*
 static/assets/capture.jpg
+.DS_STORE
+kr_web/node_modules

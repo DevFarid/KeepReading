@@ -1,4 +1,7 @@
 const { app, BrowserWindow } = require('electron')
+const { spawn } = require('child_process');
+
+let flaskProcess = null;
 
 const createWindow = () => {
     const win = new BrowserWindow({
@@ -12,5 +15,14 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
+    flaskProcess = spawn('python', ['main.py'])
     createWindow()
 })
+
+app.on('window-all-closed', () => {
+    app.quit();
+});
+
+app.on('quit', () => {
+    flaskProcess.kill();
+});

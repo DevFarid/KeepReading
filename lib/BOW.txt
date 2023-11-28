@@ -1,0 +1,76 @@
+// DELL
+dell
+d@ll
+dll
+constellation
+oconstellation.2
+0453kg
+cfg
+tfmo
+-sec-mz-7kmiton
+
+// HP
+hewlett
+packard
+hp
+hpe
+
+// LENOVO
+lenovo
+lenova
+smd7a
+7xb7a000
+units.refer
+thinksystem
+sn:smd7a
+
+// IBM
+ibm
+
+// HGST
+hgst
+huc101812css205
+uctsse120
+
+// SAMSUNG
+samsung
+
+// INTEL
+intel
+inte!
+intel®
+ssdsc2kg
+$4600
+
+// SEAGATE
+seagate
+barracuda
+st14
+
+// FUJITSU
+fujitsu
+fujitsu limited
+1999-07
+
+// HITACHI
+hitachi
+
+
+// ESERVER
+server
+@server
+eserver
+
+// WD
+western
+6178056
+6178o56
+5956196
+6289484
+6263459
+westerndigital.com
+drive parameters:
+
+// TOSHIBA
+toshiba
+<12g>

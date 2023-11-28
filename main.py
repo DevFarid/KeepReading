@@ -1,65 +1,49 @@
-from common_imports import *
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+import sys
+sys.path.insert(1, 'lib')
 
-class KeepReading:
+from lib.OCR import ObjectCharacterRecognition
+from lib.drive_scanner_runner import ModelRunner
+from flask import Flask, render_template, Response
+import cv2
+import threading
+import json
+#from lib.OCR import OCR
+from lib.drive_scanner_runner import ModelRunner
 
-    def __init__(self) -> None:
-        self.cv = CameraCV()
-        self.run()
+app = Flask(__name__)
+camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
 
-    """
-    Runs the GUI application.
-    Created by Farid on 09/13/2023.
-    """
-    
-    def run(self):
-        """
-        Start the application.
-        """        
-        # Initialize Tkinter
-        root = tk.Tk()
-        root.title("KeepReading")
-        # Get screen width and height
-        screen_width = root.winfo_screenwidth()
-        screen_height = root.winfo_screenheight()
-
-        # Calculate width and height based on a 4:3 aspect ratio
-        # Here we take 80% of the screen size to make sure the window fits in the screen
-        width = int(screen_width * 0.8)
-        height = int(width * 3 / 4)  # 4:3 aspect ratio
-
-        # If calculated height is greater than screen height, recalculate dimensions
-        if height > screen_height:
-            height = int(screen_height * 0.8)
-            width = int(height * 4 / 3)
-
-        # Position the window in the center
-        x = (screen_width // 2) - (width // 2)
-        y = (screen_height // 2) - (height // 2)
-
-        # Set up the Tkinter window
-        root.geometry(f"{width}x{height}+{x}+{y}")
-
-        # Create a new thread to run the long-running task
-        # capture_thread = threading.Thread(target=CameraCV.captureCameraPicture)
-        # capture_thread.start()
-
-        label_widget = tk.Label(root)
-        label_widget.pack()
-
-        # Event loop for camera preview
-        def run_preview():
-            img_update = self.cv.captureCameraPreview(400, 300)
-            label_widget.configure(image=img_update)
-            label_widget.image=img_update
-            label_widget.update()
-            label_widget.after(10, run_preview)
+def gen_frames():  
+    while True:
+        success, frame = camera.read()  # read the camera frame
+        if not success:
+            break
+        else:
+            ret, buffer = cv2.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+            yield (b'--frame\r\n'
+                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
             
-        button1 = tk.Button(root, text="Snap Picture", command=self.cv.analyze)
-        button1.pack()
+def gen_frame():
+    _, frame = camera.read()
+    #get data that contain image, text, confidence
+    data = ModelRunner.run([frame], "lib/all_training", ui=True)
+    # cv2.imwrite('static/assets/capture.jpg', data[0])
+    return data
+            
+@app.route('/')
+def index():
+    return render_template('index.html')
 
-        run_preview()
-        # Run the Tkinter event loop
-        root.mainloop()
+@app.route('/video_feed')
+def video_feed():
+    return Response(gen_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-KeepReading()
+@app.route('/capture/')
+def capture_image():
+    data = gen_frame()
+    print(data)
+    return render_template('ocr.html',data=data)
+
+if __name__ == "__main__":
+    app.run(debug=True)
