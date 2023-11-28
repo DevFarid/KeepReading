@@ -18,7 +18,7 @@ class CModel():
     def load(model_loc, dict_loc) -> dict:
         saved_model = {}
 
-        model_file = h5py.File(model_loc + "\\model.hdf5", "r")
+        model_file = h5py.File(model_loc + "/model.hdf5", "r")
 
         for name in model_file.keys():
             saved_model[name] = np.array(model_file[name])

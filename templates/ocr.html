@@ -10,15 +10,15 @@
 </head>
 
 <body>
-    <div class="title"> 
+    <div class="title">
         <h2>KeepReading</h2>
     </div>
     <section class="modal hidden">
         <div class="flex">
-          <button class="btn-close">⨉</button>
+            <button class="btn-close">⨉</button>
         </div>
         <div>
-          <div class="modal-title">Edit Drive Info</div>
+            <div class="modal-title">Edit Drive Info</div>
         </div>
         <form action="http://localhost:5000/handle_data" method="post">
             <label for="pid" class="label-info">PID#: </label><br>
@@ -30,8 +30,9 @@
             <input type="text" name="userReported" class="hidden" value="T">
             <button type="submit" class="btn">Submit</button>
         </form>
-      </section>
-      <div class="overlay hidden"></div>
+    </section>
+    <div class="overlay hidden"></div>
+    <div class="loader hidden"></div>
     <div class="wrapper">
 
         <!-- camera container and captrue button-->
@@ -61,13 +62,15 @@
                 <li><span id="serial" class="label-text">S/N: {{data[0].SN[1]}}</span></li>
                 <li><span id="part" class="label-text">M/N: {{data[0].MN}}</span></li>
             </ul>
-        
+
             <!-- button container, edit approve -->
             <div class="button-label-container">
                 <form action="http://localhost:5000/handle_data" method="post">
-                    
-                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button></div>
-                    <div class="button-right"><button id="button-approve" class="label-button" type="submit">APPROVE</button></div>
+
+                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button>
+                    </div>
+                    <div class="button-right"><button id="button-approve" class="label-button"
+                            type="submit">APPROVE</button></div>
                     <input type="text" name="pid" class="hidden" value="{{data[0].PID[1]}}">
                     <input type="text" name="serial" class="hidden" value="{{data[0].SN[1]}}">
                     <input type="text" name="model" class="hidden" value="{{data[0].MN}}">
@@ -79,12 +82,12 @@
 
         <!-- file upload container -->
         <div class="file-container">
-            <form method="post" enctype="multipart/form-data" action="http://localhost:5000/upload_image">
+            <form method="post" enctype="multipart/form-data" action="/upload_image">
                 <div class="upload-button-container">
                     <label for="file" class="custom-file-upload" id="file-upload">
                         <i class="fa fa-cloud-upload"></i> Choose image
                     </label>
-                    <input id="file" name="file" type="file" accept=".jpg" onchange="loadFile(event)"/>
+                    <input id="file" name="file" type="file" accept=".jpg" onchange="loadFile(event)" />
                     <button class="custom-file-upload" id="file-submit">Upload</button>
                 </div>
                 <div class="image-container">
@@ -98,14 +101,17 @@
         const overlay = document.querySelector(".overlay");
         const openModalBtn = document.querySelector("#button-edit");
         const closeModalBtn = document.querySelector(".btn-close");
+        const loader = document.querySelector(".loader")
+        const uploadBtn = document.querySelector("#file-submit");
 
+        uploadBtn.addEventListener("click", loading);
         openModalBtn.addEventListener("click", openModal);
         closeModalBtn.addEventListener("click", closeModal);
 
         document.addEventListener("keydown", function (e) {
-        if (e.key === "Escape" && !modal.classList.contains("hidden")) {
-            closeModal();
-        }
+            if (e.key === "Escape" && !modal.classList.contains("hidden")) {
+                closeModal();
+            }
         });
     </script>
 </body>
