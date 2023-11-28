@@ -9,6 +9,9 @@ class ConstantNames():
     BOW = "BOW"
     BWHIST = "BWHist"
 
+    #Manufacturers
+    DRIVES = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO", "HITACHI", "FUJITSU", "ESERVER", "WD"]
+
 class Singleton(type):
     _instances = {}
     def __call__(cls, *args, **kwargs):

@@ -19,7 +19,10 @@ def get_PID_only(file_name):
     return file_name[:file_name.find(".jpg")]
 
 
-DRIVES = ["DELL", "HP", "SEAGATE", "HP", "SAMSUNG", "HGST", "LENOVO", "HITACHI", "FUJITSU", "ESERVER", "WD"] #MAKE THIS A GLOBAL THING
+def remove_suffix(word: str, removals: list):
+    for removal in removals:
+        if word.endswith(removal):
+            return word[:len(word) - len(removal)], removal
 
 class ModelRunner():
 
@@ -41,7 +44,8 @@ class ModelRunner():
                 # getPID
                 PIDs.append(getPID(entry[1], entry[0]))
                 # getMOD
-                modelN = getMOD(entry[0], DRIVES, entry[1], arg_training_data_path)
+                modelN = getMOD(entry[0], ConstantNames.DRIVES, entry[1], arg_training_data_path)
+                modelN, manufacturer = remove_suffix(modelN, ConstantNames.DRIVES)
                 MODs.append(modelN)
                 # Remove manufactorer at the end of modelN
                 # modelN = str(modelN)
@@ -70,7 +74,7 @@ class ModelRunner():
             
             def crop_image_based_on_MOD(image, modelN):
                 modelN = str(modelN)
-                for i in DRIVES:
+                for i in ConstantNames.DRIVES:
                     if i in modelN:
                         modelN = modelN.replace(i, "")
                 return Preprocess.crop_to_ser_no(image, modelN, crop_info)
@@ -86,14 +90,10 @@ class ModelRunner():
                     ocr_text = process_image(image)
 
                     with MUTEX:
-                        modelNumber = getMOD(image, DRIVES, ocr_text, arg_training_data_path, arg_accuracy)
+                        modelNumber = getMOD(image, ConstantNames.DRIVES, ocr_text, arg_training_data_path, arg_accuracy)
 
-                    def remove_suffix(word: str, removals: list):
-                        for removal in removals:
-                            if word.endswith(removal):
-                                return word[:word.find(removal)]
                             
-                    modelNumber = remove_suffix(modelNumber, DRIVES)
+                    modelNumber, manufacturer = remove_suffix(modelNumber, ConstantNames.DRIVES)
                     cropped_image = crop_image_based_on_MOD(image, modelNumber)
                     results = [image_loc, getPID(ocr_text, image), getSER(cropped_image, modelNumber), modelNumber]
 
