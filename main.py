@@ -18,6 +18,8 @@ app = Flask(__name__)
 camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 db = OcrDatabase()
 
+PATH_TO_TRAINED_MODEL = "lib/bow_updated_model"
+
 def gen_frames():  
     while True:
         success, frame = camera.read()  # read the camera frame
@@ -32,7 +34,7 @@ def gen_frames():
 def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
-    data = ModelRunner.run([frame], "lib/bow_updated_model", ui=True)
+    data = ModelRunner.run([frame], PATH_TO_TRAINED_MODEL, ui=True)
     # cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
 
@@ -72,7 +74,7 @@ def upload_image():
     img = Image.open(data)
     img = np.array(img)
     cv2.imwrite('static/assets/capture.jpg', img)
-    data = ModelRunner.run([img], "lib/all_training", ui=True)
+    data = ModelRunner.run([img], PATH_TO_TRAINED_MODEL, ui=True)
     return render_template('ocr.html',data=data)
 
 if __name__ == "__main__":

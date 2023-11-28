@@ -52,6 +52,9 @@ ap.add_argument("-t", "--trained_data",
 ap.add_argument("--exclusions",
                 help="images to exclude",
                 default="")
+ap.add_argument("-c", "--csv",
+                required=True,
+                help="path to formatted csv file")
 args = vars(ap.parse_args())
 
 if not os.path.exists(args['trained_data']):
@@ -77,8 +80,11 @@ def process_training(drive_dict: dict):
     return training_labels
 
 #Setting up training
-image_loc = "..\\..\\data"
-csv_loc = "..\\..\\data\\15021026 1 fixed 1.csv"
+#image_loc = "..\\..\\data"
+#csv_loc = "..\\..\\data\\15021026 1 fixed 1.csv"
+
+image_loc = args["images"]
+csv_loc = args["csv"]
 
 training_data = process_training(load_training(image_loc, csv_loc, args['exclusions'].split(",")[:-1]))
 

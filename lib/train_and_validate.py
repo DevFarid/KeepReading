@@ -6,6 +6,8 @@ from random import Random
 import h5py
 import numpy as np
 
+import argparse
+
 def get_inverse_exclusions(all_relevant_files: list, exclusions: list):
     return [file[len(image_arg + "\\"):file.find(".jpg")] for file in all_relevant_files if file[len(image_arg + "\\"):file.find(".jpg")] not in exclusions]
 
@@ -14,6 +16,20 @@ model_folder = "training_and_validation"
 batch = "True"
 test_result_file = "test_results.txt"
 training_result_file = "training_results.txt"
+
+# arguments
+ap = argparse.ArgumentParser()
+ap.add_argument("images",
+                help="path to images to scan")
+ap.add_argument("csv",
+                help="path to formatted csv file")
+ap.add_argument("-e", "--extension",
+                help="file extension to load in",
+                default=".jpg")
+args = vars(ap.parse_args())
+
+image_arg = args["images"]
+csv_path = args["csv"]
 
 TEST_SET_LENGTH = 78
 
@@ -44,14 +60,14 @@ for name in inv_exclusion_list_l:
     inv_exclusions_list += name + ","
 inv_exclusions_list = inv_exclusions_list.strip()[:-1]
 
-result = subprocess.run(["python", "drive_scanner_trainer.py", "-i", image_arg, "-t", model_folder, "--exclusions", exclusion_list])
+result = subprocess.run(["python", "lib\\drive_scanner_trainer.py", "-i", image_arg, "-c", csv_path, "-t", model_folder, "--exclusions", exclusion_list])
 #got results in a text file
 
 #will exclude all but test images (runs on test images only)
-test_result = subprocess.run(["python", "drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", inv_exclusions_list, "-r", test_result_file])
+test_result = subprocess.run(["python", "lib\\drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", inv_exclusions_list, "-r", test_result_file])
 print("TEST COMPLETE")
 
 #will exclude all but training images (runs on training images only)
-training_result = subprocess.run(["python", "drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", exclusion_list, "-r", training_result_file])
+training_result = subprocess.run(["python", "lib\\drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", exclusion_list, "-r", training_result_file])
 print("TRAINING COMPLETE")
 
