@@ -27,7 +27,7 @@ def gen_frames():
 def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
-    data = ModelRunner.run([frame], "lib/model_with_photos", ui=True)
+    data = ModelRunner.run([frame], "lib/all_training", ui=True)
     # cv2.imwrite('static/assets/capture.jpg', data[0])
     return data
             

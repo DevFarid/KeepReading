@@ -1,7 +1,7 @@
 import csv
 
 results = []
-with open("test_results.txt") as txtfile:
+with open("all_trained_test.txt") as txtfile:
     while True:
         line = txtfile.readline()
         if not line:
@@ -16,7 +16,7 @@ with open("..\\..\\data\\15021026 1 fixed 1.csv", "r") as csvfile:
 
 results = [[result.strip() for result in entry] for entry in results]
 for i in range(len(results)):
-    results[i][0] = results[i][0][12:19] #should be 9:16
+    results[i][0] = results[i][0][13:20] #should be 9:16
 
 accuracies = [[0,0],[0,0],[0,0]]
 

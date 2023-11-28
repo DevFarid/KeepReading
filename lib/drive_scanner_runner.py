@@ -54,13 +54,6 @@ class ModelRunner():
 
             return [{"PID": PIDs[0], "SN": SNs[0], "MN": MODs[0]}]
         else:
-            """
-            all_files = os.listdir(args['image'])
-            exclusions = args['exclusions'].split(',')[:-1]
-            selected_files = [os.path.join(args['image'], file) for file in all_files if (file.endswith(arg_extension) and get_PID_only(file) not in exclusions)]
-
-            images = [(cv2.imread(image_loc), image_loc) for image_loc in selected_files]
-            """
 
             d_queue = Queue()
             r_queue = Queue()
