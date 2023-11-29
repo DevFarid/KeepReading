@@ -9,6 +9,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^27.0.0"
+    "electron": "^27.1.2"
+  },
+  "dependencies": {
+    "annyang": "^2.6.1",
+    "webframe": "^0.9.0"
   }
 }
