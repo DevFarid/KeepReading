@@ -23,6 +23,7 @@ def remove_suffix(word: str, removals: list):
     for removal in removals:
         if word.endswith(removal):
             return word[:len(word) - len(removal)], removal
+    return word, ""
 
 class ModelRunner():
 

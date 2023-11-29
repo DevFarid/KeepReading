@@ -75,10 +75,18 @@ def getPID(text: list, im, rotation=0):
     truth, name = containsPIDVar(text)
     if truth:
         return True, text[text.index(name) + 1]
-    elif rotation != 3:
+    elif rotation != 4:
         received, answer = getPID(pytesseract.image_to_data(np.rot90(im), output_type=Output.DICT)['text'], np.rot90(im), rotation + 1)
         return received, answer
     else:
+        for entry in text:
+            if len(entry) == 7:
+                isPID = True
+                for character in entry:
+                    if not character.isdigit():
+                        isPID = False
+                if isPID:
+                    return True, entry
         return False, ""
 
 # getSER
@@ -96,10 +104,19 @@ def getSER(im, model, rotation=0):
     truth, index = getSerVar(text)
     if truth:
         return True, text[index]
-    elif rotation != 3:
+    elif rotation != 4:
         received, answer = getSER(np.rot90(im), model, rotation + 1)
         return received, answer
-    return False, ""
+    else:
+        for entry in text:
+            if len(entry) >= 10:
+                isSER = True
+                for character in entry:
+                    if not character.isalnum():
+                        isSER = False
+                if isSER:
+                    return True, entry
+        return False, ""
 
 # getMOD
 def getMOD(image, drive_types: list, text: list, training_data_locs: list, accuracy_mode=False):

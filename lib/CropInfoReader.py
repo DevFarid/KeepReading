@@ -1,12 +1,27 @@
+import os
 class CropInfoReader:
 	def __init__(self) -> None:
 		pass
 
 	@staticmethod
+	def checkLib(s):
+		if "lib" in os.getcwd():
+			if "lib/" in s[:4]:
+				return s[4:]
+			else:
+				return s
+		else:
+			if "lib/" in s[:4]:
+				return s
+			else:
+				return "lib/" + s[:4]
+	
+	@staticmethod
 	def getCropInfo():
 		cropDimension = {}
 		# get crop-dimensions from txt file
-		with open('lib/crop_details.txt',"r") as file:
+
+		with open(CropInfoReader.checkLib('lib/crop_details.txt'),"r") as file:
 			lines = file.readlines()
 			model = ""
 			dimensions = ""
