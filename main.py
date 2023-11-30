@@ -95,6 +95,17 @@ def voice_control():
 
         return redirect('/',code=302)
     
+    
+    elif(voice_data.find('upload') != -1):
+
+        return redirect('/upload_image/',code=302)
+    
+    else:
+        print("ERROR: Cannot find that command")
+        return redirect('/',code=302)
+    
+
+
 
 
 if __name__ == "__main__":

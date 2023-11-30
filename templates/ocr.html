@@ -74,10 +74,12 @@
             <div class="button-label-container">
                 <form action="http://localhost:5000/handle_data" method="post">
 
-                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button>
+                    <div class="button-left">
+                        <button id="button-edit" class="label-button" type="button">EDIT</button>
                     </div>
-                    <div class="button-right"><button id="button-approve" class="label-button"
-                            type="submit">APPROVE</button></div>
+                    <div class="button-right">
+                        <button id="button-approve" class="label-button"type="submit">APPROVE</button>
+                    </div>
                     <input type="text" name="pid" class="hidden" value="{{data[0].PID[1]}}">
                     <input type="text" name="serial" class="hidden" value="{{data[0].SN[1]}}">
                     <input type="text" name="model" class="hidden" value="{{data[0].MN}}">
