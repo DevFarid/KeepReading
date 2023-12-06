@@ -82,7 +82,7 @@ class CModel():
         return X, convert_all_to_one_hots(Y)
 
 class ModelUtils():
-    MODEL_WEIGHTS = {"BWHist": 100, "BOW": 50}
+    MODEL_WEIGHTS = {"BWHist": 100, "BOW": 50} #100, 50
     ERROR_THRESHOLD = 2
 
     @staticmethod

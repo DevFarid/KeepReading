@@ -60,7 +60,7 @@ for name in inv_exclusion_list_l:
     inv_exclusions_list += name + ","
 inv_exclusions_list = inv_exclusions_list.strip()[:-1]
 
-#result = subprocess.run(["python", "drive_scanner_trainer.py", "-i", image_arg, "-c", csv_path, "-t", model_folder, "--exclusions", exclusion_list])
+result = subprocess.run(["python", "drive_scanner_trainer.py", "-i", image_arg, "-c", csv_path, "-t", model_folder, "--exclusions", exclusion_list])
 #got results in a text file
 
 #will exclude all but test images (runs on test images only)

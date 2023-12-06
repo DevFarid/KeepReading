@@ -14,8 +14,8 @@ from datetime import datetime
 from lib.drive_scanner_runner import ModelRunner
 
 app = Flask(__name__)
-# camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-camera = cv2.VideoCapture(-0)
+camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
+#camera = cv2.VideoCapture(-1)
 # camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 db = OcrDatabase()
 
@@ -36,7 +36,7 @@ def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
     data = ModelRunner.run([frame], PATH_TO_TRAINED_MODEL, ui=True)
-    # cv2.imwrite('static/assets/capture.jpg', data[0])
+    cv2.imwrite('static/assets/capture.jpg', frame)
     return data
 
             
@@ -65,8 +65,8 @@ def handle_data():
     else:
         userReported = False
     dt = datetime.now()
-    ocr = OcrResult(int(pid), 0, '', model, '', serialNumber, userReported, dt).__dict__
-    post = Api.insert(ocr, db.col)
+    #ocr = OcrResult(int(pid), 0, '', model, '', serialNumber, userReported, dt).__dict__
+    #post = Api.insert(ocr, db.col)
     return render_template('index.html')
 
 @app.route('/upload_image/', methods=['POST'])
