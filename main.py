@@ -15,8 +15,6 @@ from lib.drive_scanner_runner import ModelRunner
 
 app = Flask(__name__)
 camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
-#camera = cv2.VideoCapture(-1)
-# camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 db = OcrDatabase()
 
 PATH_TO_TRAINED_MODEL = "lib/default_model"
