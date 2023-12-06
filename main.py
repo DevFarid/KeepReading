@@ -19,7 +19,7 @@ camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 # camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 db = OcrDatabase()
 
-PATH_TO_TRAINED_MODEL = "lib/bow_updated_model"
+PATH_TO_TRAINED_MODEL = "lib/default_model"
 
 def gen_frames():  
     while True:
