@@ -1,1 +1,0 @@
-DRIVE NUM: 0	PID: (True, '4421278')	Serial Number: (True, 'OBGZS5KF')	Model Number: ('HUC101812CSS205', 1, 'HUC101812CSS205')

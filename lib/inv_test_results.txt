@@ -1,1 +1,0 @@
-	Drive Number: 0	PID: (True, '4421193')	Serial Number: (False, '')	Model Number: AL15SEB060NYDELL

@@ -23,6 +23,7 @@ def remove_suffix(word: str, removals: list):
     for removal in removals:
         if word.endswith(removal):
             return word[:len(word) - len(removal)], removal
+    return word, ""
 
 class ModelRunner():
 
@@ -89,8 +90,8 @@ class ModelRunner():
                     image_loc = image_info[1]
                     ocr_text = process_image(image)
 
-                    with MUTEX:
-                        modelNumber = getMOD(image, ConstantNames.DRIVES, ocr_text, arg_training_data_path, arg_accuracy)
+                    #with MUTEX:
+                    modelNumber = getMOD(image, ConstantNames.DRIVES, ocr_text, arg_training_data_path, arg_accuracy)
 
                             
                     modelNumber, manufacturer = remove_suffix(modelNumber, ConstantNames.DRIVES)
@@ -180,13 +181,6 @@ if __name__ == "__main__":
     if args['batch']:
         for i, result in enumerate(model_results):
             with open(args["results"], "a") as res_file:
-                """
-                res_file.write(f'\tDrive Number: {i}')
-                res_file.write(f'\tPID: {result["PID"]}')
-                res_file.write(f'\tSerial Number: {result["SN"]}')
-                res_file.write(f'\tModel Number: {result["MN"]}')
-                res_file.write('\n')
-                """
                 res_file.write(f'{result["drive_label"]},{result["PID"]},{result["SN"]},{result["MN"]}')
                 res_file.write("\n")
     else:

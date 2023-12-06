@@ -23,7 +23,7 @@ class ConstantFilePaths(metaclass=Singleton):
     bow = "BOW.txt"
     def __init__(self, ui_call=False):
         if ui_call:
-            self.bow = "lib\\BOW.txt"
+            self.bow = "lib/BOW.txt"
     pass
 
 ### CONVERTS A CATEGORY TO A ONE-HOT ###

@@ -60,14 +60,14 @@ for name in inv_exclusion_list_l:
     inv_exclusions_list += name + ","
 inv_exclusions_list = inv_exclusions_list.strip()[:-1]
 
-result = subprocess.run(["python", "lib\\drive_scanner_trainer.py", "-i", image_arg, "-c", csv_path, "-t", model_folder, "--exclusions", exclusion_list])
+result = subprocess.run(["python", "drive_scanner_trainer.py", "-i", image_arg, "-c", csv_path, "-t", model_folder, "--exclusions", exclusion_list])
 #got results in a text file
 
 #will exclude all but test images (runs on test images only)
-test_result = subprocess.run(["python", "lib\\drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", inv_exclusions_list, "-r", test_result_file])
+test_result = subprocess.run(["python", "drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", inv_exclusions_list, "-r", test_result_file])
 print("TEST COMPLETE")
 
 #will exclude all but training images (runs on training images only)
-training_result = subprocess.run(["python", "lib\\drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", exclusion_list, "-r", training_result_file])
+training_result = subprocess.run(["python", "drive_scanner_runner.py", "-i", image_arg, "-b", "True", "-t", model_folder, "--exclusions", exclusion_list, "-r", training_result_file])
 print("TRAINING COMPLETE")
 

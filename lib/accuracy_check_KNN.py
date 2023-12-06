@@ -18,6 +18,8 @@ with open("test_results.txt") as txtfile:
         test_results.append(line.split(sep=','))
 
 ap = argparse.ArgumentParser()
+ap.add_argument("image_path",
+                help="path to training image locations")
 ap.add_argument("csv",
                 help="path to formatted csv file")
 ap.add_argument("--extension",
@@ -34,7 +36,7 @@ with open(args["csv"], "r") as csvfile:
 
 training_results = [[result.strip() for result in entry] for entry in training_results]
 for i in range(len(training_results)):
-    training_results[i][0] = training_results[i][0][len(args["csv"]) + 1:len(training_results[i][0]) - len(args["extension"])]
+    training_results[i][0] = training_results[i][0][len(args["image_path"]) + 1:len(training_results[i][0]) - len(args["extension"])]
 
 accuracies = [[0,0],[0,0],[0,0]]
 
@@ -59,7 +61,7 @@ print(f'Model Accuracy: {(accuracies[2][0] / (accuracies[2][0] + accuracies[2][1
 
 test_results = [[result.strip() for result in entry] for entry in test_results]
 for i in range(len(test_results)):
-    test_results[i][0] = test_results[i][0][len(args["csv"]) + 1:len(test_results[i][0]) - len(args["extension"])]
+    test_results[i][0] = test_results[i][0][len(args["image_path"]) + 1:len(test_results[i][0]) - len(args["extension"])]
 
 accuracies = [[0,0],[0,0],[0,0]]
 

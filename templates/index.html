@@ -13,19 +13,20 @@
     </div>
     <section class="modal hidden">
         <div class="flex">
-          <button class="btn-close">⨉</button>
+            <button class="btn-close">⨉</button>
         </div>
         <div>
-          <h3>Edit drive info</h3>
-          <p>
-            paragraph
-          </p>
+            <h3>Edit drive info</h3>
+            <p>
+                paragraph
+            </p>
         </div>
-      
+
         <input type="email" id="email" placeholder="brendaneich@js.com" />
         <button class="btn">Submit</button>
-      </section>
-      <div class="overlay hidden"></div>
+    </section>
+    <div class="overlay hidden"></div>
+    <div class="loader hidden"></div>
     <div class="wrapper">
 
         <!-- camera container and captrue button-->
@@ -36,7 +37,7 @@
             <div class="button-container">
                 <!-- <button style="font-size:24px">Audio Control<i class="fa fa-microphone"></i></button> -->
                 <form action="/capture" method="get">
-                    <button class="button" type="submit">CAPTURE</button>
+                    <button class="button" type="submit" id="capture">CAPTURE</button>
                 </form>
             </div>
         </div>
@@ -55,12 +56,14 @@
                 <li><span id="serial" class="label-text">S/N: </span></li>
                 <li><span id="part" class="label-text">M/N: </span></li>
             </ul>
-        
+
             <!-- button container, edit approve -->
             <div class="button-label-container">
                 <form>
-                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button></div>
-                    <div class="button-right"><button id="button-approve" class="label-button" type="button">APPROVE</button></div>
+                    <div class="button-left"><button id="button-edit" class="label-button" type="button">EDIT</button>
+                    </div>
+                    <div class="button-right"><button id="button-approve" class="label-button"
+                            type="button">APPROVE</button></div>
                 </form>
             </div>
         </div>
@@ -68,12 +71,12 @@
 
         <!-- file upload container -->
         <div class="file-container">
-            <form method="post" enctype="multipart/form-data" action="http://localhost:5000/upload_image">
+            <form method="post" enctype="multipart/form-data" action="/upload_image">
                 <div class="upload-button-container">
                     <label for="file" class="custom-file-upload" id="file-upload">
                         <i class="fa fa-cloud-upload"></i> Choose image
                     </label>
-                    <input id="file" name="file" type="file" accept=".jpg" onchange="loadFile(event)"/>
+                    <input id="file" name="file" type="file" accept=".jpg" onchange="loadFile(event)" />
                     <button class="custom-file-upload" id="file-submit">Upload</button>
                 </div>
                 <div class="image-container">
@@ -82,4 +85,13 @@
             </form>
         </div>
     </div>
+    <script>
+        const overlay = document.querySelector(".overlay");
+        const uploadBtn = document.querySelector("#file-submit");
+        const loader = document.querySelector(".loader");
+        const captureBtn = document.querySelector("#capture");
+
+        uploadBtn.addEventListener("click", loading);
+        captureBtn.addEventListener("click", loading);
+    </script>
 </body>

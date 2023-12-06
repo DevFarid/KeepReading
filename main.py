@@ -14,11 +14,10 @@ from datetime import datetime
 from lib.drive_scanner_runner import ModelRunner
 
 app = Flask(__name__)
-# camera = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-camera = cv2.VideoCapture(1, cv2.CAP_DSHOW)
+camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
 db = OcrDatabase()
 
-PATH_TO_TRAINED_MODEL = "lib/bow_updated_model"
+PATH_TO_TRAINED_MODEL = "lib/default_model"
 
 def gen_frames():  
     while True:
@@ -35,7 +34,7 @@ def gen_frame():
     _, frame = camera.read()
     #get data that contain image, text, confidence
     data = ModelRunner.run([frame], PATH_TO_TRAINED_MODEL, ui=True)
-    # cv2.imwrite('static/assets/capture.jpg', data[0])
+    cv2.imwrite('static/assets/capture.jpg', frame)
     return data
 
             
@@ -64,8 +63,8 @@ def handle_data():
     else:
         userReported = False
     dt = datetime.now()
-    ocr = OcrResult(int(pid), 0, '', model, '', serialNumber, userReported, dt).__dict__
-    post = Api.insert(ocr, db.col)
+    #ocr = OcrResult(int(pid), 0, '', model, '', serialNumber, userReported, dt).__dict__
+    #post = Api.insert(ocr, db.col)
     return render_template('index.html')
 
 @app.route('/upload_image/', methods=['POST'])
@@ -73,6 +72,7 @@ def upload_image():
     data = request.files['file']
     img = Image.open(data)
     img = np.array(img)
+    img = cv2.rotate(img, cv2.ROTATE_90_CLOCKWISE) # fixes orientation, image for some reason rotates at some point before this
     cv2.imwrite('static/assets/capture.jpg', img)
     data = ModelRunner.run([img], PATH_TO_TRAINED_MODEL, ui=True)
     return render_template('ocr.html',data=data)
