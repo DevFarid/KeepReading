@@ -21,3 +21,4 @@ const loadFile = function (event) {
     var image = document.getElementById('upload-image');
     image.src = URL.createObjectURL(event.target.files[0]);
 }
+

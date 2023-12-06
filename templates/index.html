@@ -5,6 +5,7 @@
         @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
     </style>
     <script src="../static/functions.js"></script>
+
 </head>
 
 <body>
@@ -39,6 +40,14 @@
                 <form action="/capture" method="get">
                     <button class="button" type="submit" id="capture">CAPTURE</button>
                 </form>
+                
+                <div>
+                    <form action="/voice_control" method="get">
+                        <button id="btnVoiceControl">Voice Control</button>
+                    </form>
+                    
+                </div>
+                
             </div>
         </div>
 
@@ -93,5 +102,58 @@
 
         uploadBtn.addEventListener("click", loading);
         captureBtn.addEventListener("click", loading);
+        
+        /*
+        //voice control part
+        //function to call function in python server
+        
+        function ExecPythonCommand(pythonCommand){
+        var request = new XMLHttpRequest()
+        request.open("GET", "/" + pythonCommand, true)
+        request.send()
+        }
+
+
+ 
+            var message = document.querySelector('#message');
+
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            var SpeechGrammarList = SpeechGrammarList || webkitSpeechGrammarList;
+            var grammar = '#JSGF V1.0;'
+
+            var recognition = new SpeechRecognition();
+            var speechRecognitionList = new SpeechGrammarList();
+            speechRecognitionList.addFromString(grammar, 1);
+            recognition.grammars = speechRecognitionList;
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+
+
+            recognition.onspeechend = function() {
+                recognition.stop();
+            };
+
+            recognition.onerror = function(event) {
+                message.textContent = 'Error occurred in recognition: ' + event.error;
+            }        
+
+            recognition.onresult = function(event) {
+                var last = event.results.length - 1;
+                var command = event.results[last][0].transcript;
+                message.textContent = 'Voice Input: ' + command + '.';
+
+                if(command.toLowerCase() === 'captrue'){
+                    ExecPythonCommand('captrue');
+                }
+                else if (command.toLowerCase() === 'approve'){
+                    
+                }  
+            };
+
+            document.querySelector('#btnVoiceControl').addEventListener('click', function(){
+                recognition.start();
+
+            });
+        */
     </script>
 </body>

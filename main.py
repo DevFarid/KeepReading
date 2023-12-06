@@ -4,7 +4,7 @@ sys.path.insert(1, 'lib')
 from lib.OCR import ObjectCharacterRecognition
 from lib.drive_scanner_runner import ModelRunner
 from lib.db import OcrResult, OcrDatabase, Api
-from flask import Flask, render_template, Response, request
+from flask import Flask, render_template, Response, request, redirect
 import cv2
 import numpy as np
 from PIL import Image
@@ -12,6 +12,7 @@ import threading
 from datetime import datetime
 #from lib.OCR import OCR
 from lib.drive_scanner_runner import ModelRunner
+import VoiceControl
 
 app = Flask(__name__)
 camera = cv2.VideoCapture(2, cv2.CAP_DSHOW)
@@ -76,6 +77,34 @@ def upload_image():
     cv2.imwrite('static/assets/capture.jpg', img)
     data = ModelRunner.run([img], PATH_TO_TRAINED_MODEL, ui=True)
     return render_template('ocr.html',data=data)
+
+
+@app.route('/voice_control/')
+def voice_control():
+    voice_data = VoiceControl.VoiceData()
+    print(voice_data)
+
+    
+    if(voice_data.find('capture') != -1): 
+        
+        return redirect('/capture/',code=302)
+    
+    elif(voice_data.find('reset') != -1):
+
+        return redirect('/',code=302)
+    
+    
+    elif(voice_data.find('upload') != -1):
+
+        return redirect('/upload_image/',code=302)
+    
+    else:
+        print("ERROR: Cannot find that command")
+        return redirect('/',code=302)
+    
+
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
